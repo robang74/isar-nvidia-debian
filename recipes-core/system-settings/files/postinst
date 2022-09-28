@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Copyright (c) Siemens AG, 2022
+#
+# Authors:
+#  Jan Kiszka <jan.kiszka@siemens.com>
+#  Roberto A. Foglietta <roberto.foglietta@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+#
+
+set_rc_local() {
+	set -e
+	which crontab >/dev/null
+	f=$(mktemp)
+	crontab -lu root >$f || true
+	echo "@reboot /etc/rc.local" >>$f
+	crontab -u root $f
+	rm -f $f
+}
+
+set_motd_issue() (
+	cd /etc
+	echo >> motd
+	cat issue >> motd
+	cat motd > motd.1
+	cat issue.1 > issue
+	echo >> issue
+	cat issue.1 motd.1 > motd
+	rm -f issue.1 motd.1
+)
+
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+
+ln -sf /bin/bash /bin/sh
+echo "nameserver 8.8.8.8" >>/etc/resolv.conf
+for i in $(seq 1 8); do mkdir -p /usr/share/man/man$i; done
+echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+echo "debraf" > /etc/hostname
+rm -f /etc/securetty
+set_motd_issue
+set_rc_local

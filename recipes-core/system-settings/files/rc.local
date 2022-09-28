@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Copyright (c) Siemens AG, 2022
+#
+# Authors:
+#  Roberto A. Foglietta <roberto.foglietta@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+#
+
+# RAF: too lazy to configure the service but time needed to be updated
+while ! /usr/sbin/ntpdate time.ien.it; do sleep 5; done >/dev/null 2>&1 &
+
+# RAF: enable the ECC RAM and unlock the access for the users
+/usr/bin/nvidia-smi -e 1 2>&1 >/dev/null &
+
+# RAF: just at the 1st boot
+[ -x /etc/rc.1stboot ] && /etc/rc.1stboot

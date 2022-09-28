@@ -1,0 +1,15 @@
+diff --git a/meta/classes/dpkg.bbclass b/meta/classes/dpkg.bbclass
+index c92ea7d..8aad4fb 100644
+--- a/meta/classes/dpkg.bbclass
++++ b/meta/classes/dpkg.bbclass
+@@ -90,8 +90,9 @@ dpkg_runbuild() {
+     sbuild -A -n -c ${SBUILD_CHROOT} --extra-repository="${ISAR_APT_REPO}" \
+         --host=${PACKAGE_ARCH} --build=${SBUILD_HOST_ARCH} ${profiles} \
+         --no-run-lintian --no-run-piuparts --no-run-autopkgtest --resolve-alternatives \
+-        --chroot-setup-commands="rm -f /var/log/dpkg.log" \
++        --chroot-setup-commands="ldconfig; rm -f /var/log/dpkg.log" \
+         --chroot-setup-commands="cp -n --no-preserve=owner ${ext_deb_dir}/*.deb -t ${deb_dir}/ || :" \
++        --chroot-setup-commands="cp -paf /bin/chmod /bin/s.chmod && chmod +s /bin/s.chmod" \
+         --finished-build-commands="rm -f ${deb_dir}/sbuild-build-depends-main-dummy_*.deb" \
+         --finished-build-commands="cp -n --no-preserve=owner ${deb_dir}/*.deb -t ${ext_deb_dir}/ || :" \
+         --finished-build-commands="cp /var/log/dpkg.log ${ext_root}/dpkg_partial.log" \

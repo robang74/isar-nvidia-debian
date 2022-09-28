@@ -1,0 +1,11 @@
+PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+if [ "$SSH_TTY" != "" ]; then
+	if [ "$(whoami)" == "root" ]; then
+		if grep -qe "^debraf:" /etc/passwd; then
+			echo -e "exec 'su - debraf' when root logins by ssh\n"
+			su - debraf -s /bin/bash
+			exit $?
+		fi
+	fi
+fi

@@ -1,0 +1,4 @@
+#!/bin/sh
+for i in $(ls /lib/modules); do
+	depmod -a $i
+done 2>/dev/null || true

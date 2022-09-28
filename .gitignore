@@ -1,0 +1,4 @@
+isar
+build
+.gitpasswd
+recipes-core/images/eval-image.bb

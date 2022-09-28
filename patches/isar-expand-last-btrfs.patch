@@ -1,0 +1,44 @@
+From 67c4ea67ac96276c5ec0e6b15d035543b99b8e04 Mon Sep 17 00:00:00 2001
+From: "Roberto A. Foglietta" <roberto.foglietta@gmail.com>
+Date: Thu, 29 Sep 2022 15:36:48 +0000
+Subject: [PATCH] expand last partition btrfs support added
+
+improvement, expand-on-first-boot: support for btrfs added
+
+Signed-off-by: Roberto A. Foglietta <roberto.foglietta@gmail.com>
+---
+ .../expand-on-first-boot/expand-on-first-boot_1.1.bb       | 2 +-
+ .../expand-on-first-boot/files/expand-last-partition.sh    | 7 ++++++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/meta/recipes-support/expand-on-first-boot/expand-on-first-boot_1.1.bb b/meta/recipes-support/expand-on-first-boot/expand-on-first-boot_1.1.bb
+index 1703a64..d41dd83 100644
+--- a/meta/recipes-support/expand-on-first-boot/expand-on-first-boot_1.1.bb
++++ b/meta/recipes-support/expand-on-first-boot/expand-on-first-boot_1.1.bb
+@@ -9,7 +9,7 @@ inherit dpkg-raw
+ 
+ DESCRIPTION = "This service grows the last partition to the full medium during first boot"
+ 
+-DEBIAN_DEPENDS = "systemd, sed, grep, coreutils, mount, e2fsprogs, fdisk, util-linux"
++DEBIAN_DEPENDS = "systemd, sed, grep, coreutils, mount, e2fsprogs, fdisk, util-linux, btrfs-progs"
+ 
+ SRC_URI = " \
+     file://expand-on-first-boot.service \
+diff --git a/meta/recipes-support/expand-on-first-boot/files/expand-last-partition.sh b/meta/recipes-support/expand-on-first-boot/files/expand-last-partition.sh
+index 759ff8b..5b73dc4 100755
+--- a/meta/recipes-support/expand-on-first-boot/files/expand-last-partition.sh
++++ b/meta/recipes-support/expand-on-first-boot/files/expand-last-partition.sh
+@@ -61,4 +61,9 @@ partx -u "${LAST_PART}"
+ # when using systemd mount units.
+ export EXT2FS_NO_MTAB_OK=1
+ 
+-resize2fs "${LAST_PART}"
++if ! resize2fs "${LAST_PART}"; then
++	mkdir -p /tmp/btrfs
++	mount "${LAST_PART}" /tmp/btrfs
++	btrfs filesystem resize max /tmp/btrfs
++	umount /tmp/btrfs && rmdir /tmp/btrfs
++fi
+-- 
+2.30.2
+

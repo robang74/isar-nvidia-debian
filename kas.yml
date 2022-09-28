@@ -1,0 +1,41 @@
+#
+# Copyright (c) Siemens AG, 2022
+#
+# Authors:
+#  Jan Kiszka <jan.kiszka@siemens.com>
+#  Roberto A. Foglietta <roberto.foglietta@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+#
+
+header:
+  version: 10
+
+build_system: isar
+
+machine: debx86
+distro: debian-bullseye
+target: eval-image
+
+repos:
+  isar-debx86:
+
+  isar:
+    url: https://github.com/ilbers/isar
+    refspec: 0daa55195f0f55465a367aec1ceeec5f26c161af
+    layers:
+      meta:
+
+bblayers_conf_header:
+  standard: |
+    LCONF_VERSION = "1"
+    BBPATH = "${TOPDIR}"
+    BBFILES ?= ""
+
+local_conf_header:
+  standard: |
+    CONF_VERSION = "1"
+  user-accounts: |
+    USERS += "root"
+    USER_root[flags] = "create-home"
+    USER_root[password] = "$y$j9T$HHatTQOzHmoaPdbyVQG1P/$Qrt05UebNIw.sv43WdWoUE24jw3G3.wp9oD9FM5El59"

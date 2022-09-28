@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+user="debraf"
+groupadd -f docker
+groupadd -f -g 1001 $user
+useradd -m -u 1000 -g $user -s /bin/bash -c "test user" -r $user
+chown -R $user.$user /home/$user
+usermod -aG docker $user
+usermod -aG sudo $user
+passwd -du $user
+
+mkdir -p /etc/sudoers.d
+echo "$user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/supersudoers
+chmod 0644 /etc/sudoers.d/supersudoers

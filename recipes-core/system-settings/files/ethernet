@@ -1,0 +1,17 @@
+#
+# Copyright (c) Siemens AG, 2021
+#
+# Authors:
+#  Jan Kiszka <jan.kiszka@siemens.com>
+#  Roberto A. Foglietta <roberto.foglietta@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+#
+
+allow-hotplug eth0
+#allow-hotplug eth1
+#allow-hotplug eth2
+
+iface eth0 inet dhcp
+#iface eth1 inet dhcp
+#iface eth2 inet dhcp

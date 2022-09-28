@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Copyright (c) Siemens AG, 2022
+#
+# Authors:
+#  Roberto A. Foglietta <roberto.foglietta@gmail.com>
+#
+# SPDX-License-Identifier: MIT
+#
+
+# RAF: this system is not supposed to slee in any way
+/usr/bin/systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+# RAF: at the first boot the last partion is extended but 2nd GPT table set
+dev=$(/usr/bin/mount | /usr/bin/sed -ne "s,\(.*\) on / type .*,\\1,p")
+dev=${dev::-1}; while [ ! -b "$dev" -a -n "$dev" ]; do dev=${dev::-1}; done
+test -b "$dev" && echo w | /usr/sbin/fdisk $dev
+
+# RAF: hostname for local host resolution is missing for IPv4
+/usr/bin/sed -i "s,\(127.0.0.1.*localhost.*\),\\1 $(hostname)," /etc/hosts
+
+# RAF: just at the first boot
+/usr/bin/rm -f /etc/rc.1stboot
