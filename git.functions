@@ -110,7 +110,7 @@ function ccache() {
 		echo -e "\nNOTICE: timeout '$2' has been set to $t seconds\n"
 		shift 2; runcmd=1
 	else
-		echo -e "\nUSAGE: cchace [ --time 14400 | --save '.gitpasswd' ]\n"
+		echo -e "\nUSAGE: cchace [ --time 14400 | --save '.gitpasswd' | --stop ]\n"
 		return
 	fi
 	git config credential.helper store
