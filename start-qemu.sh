@@ -27,7 +27,7 @@ if [ ${#nimg[@]} -gt 1 ]; then
 	exit 2
 fi
 
-usage()
+function usage()
 {
 	printf "%b" "Usage: $0 ARCHITECTURE [QEMU_OPTIONS]\n"
 	printf "%b" "\nSet QEMU_PATH environment variable to use a locally " \
@@ -39,7 +39,13 @@ if [ -n "${QEMU_PATH}" ]; then
 	QEMU_PATH="${QEMU_PATH}/"
 fi
 
-case "$1" in
+if [ "$1" == "" ]; then
+	arch=$(sed -ne "s,DISTRO_ARCH.*\"\(.*\)\",\\1,p" conf/machine/debx86.conf  2>/dev/null)
+else
+	arch=$1; shift
+fi
+
+case "$arch" in
 	x86|x86_64|amd64)
 		DISTRO_ARCH=amd64
 		QEMU=qemu-system-x86_64
@@ -98,7 +104,7 @@ case "$1" in
 		usage
 		;;
 	*)
-		echo "Unsupported architecture: $1"
+		echo "Unsupported architecture: $arch"
 		exit 1
 		;;
 esac
@@ -110,7 +116,6 @@ IMAGE_FILE=$wicfile
 QEMU_EXTRA_ARGS="$QEMU_EXTRA_ARGS -bios /usr/share/ovmf/OVMF.fd"
 #QEMU_EXTRA_ARGS="$QEMU_EXTRA_ARGS -nographic"
 
-shift 1
 # SC2086: Double quote to prevent globbing and word splitting.
 # shellcheck disable=2086
 "${QEMU_PATH}${QEMU}" \
