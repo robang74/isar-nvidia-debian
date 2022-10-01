@@ -107,9 +107,10 @@ esac
 #IMAGE_FILE=$(ls "${IMAGE_PREFIX}.ext4.img")
 
 IMAGE_FILE=$wicfile
+QEMU_EXTRA_ARGS="$QEMU_EXTRA_ARGS -bios /usr/share/ovmf/OVMF.fd"
+#QEMU_EXTRA_ARGS="$QEMU_EXTRA_ARGS -nographic"
 
 shift 1
-
 # SC2086: Double quote to prevent globbing and word splitting.
 # shellcheck disable=2086
 "${QEMU_PATH}${QEMU}" \
