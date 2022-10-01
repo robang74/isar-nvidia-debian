@@ -102,7 +102,7 @@ function ccache() {
 	if [ "x$1" == "x--save" -a -n "$2" ]; then
 		echo "$2" > $d/.gitpasswd
 		echo -e "\nNOTICE: password saved in $d/.gitpasswd\n"
-		history -d -1
+		history -d -1 2>/dev/null || history -c
 	elif [ "x$1" == "x--stop" ]; then
 		t=0
 	elif [ "x$1" == "x--time" -a -n "$2" ]; then
