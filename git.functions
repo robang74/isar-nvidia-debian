@@ -10,9 +10,7 @@
 
 function irebase() {
 	hash=$(git rev-list --parents -n2 $1 | tail -n1 | head -c40)
-#	hash=$(git rev-list --parents -n1 $1)
 	git rebase -i $hash
-#	git rebase -i ${1}^1
 }
 export -f irebase
 
@@ -25,13 +23,11 @@ function repshrink() {
 export -f repshrink
 
 function lg() {
-#	git log --oneline $@
 	git log --abbrev-commit --format=format:'* %C(bold cyan)%h%C(reset) - %C(white)%s%C(reset) %C(bold green)%d%C(reset)' --all $@
 }
 export -f lg
 
 function lt() {
-#	git log --graph --oneline --all
 	git log --graph --abbrev-commit --decorate --format=format:'%C(bold cyan)%h%C(reset) - %C(white)%s%C(reset) %C(bold green)%d%C(reset)' --all $@
 }
 export -f lt
@@ -97,7 +93,7 @@ function sw() {
 export -f sw
 
 function ccache() {
-	local -i t=14400 runcmd=0
+	local -i t=3600 runcmd=0
 	local d=$(git rev-parse --show-toplevel)
 	if [ "x$1" == "x--save" -a -n "$2" ]; then
 		echo "$2" > $d/.gitpasswd
@@ -109,8 +105,8 @@ function ccache() {
 		t=$2; [ $t -lt 600 ] && t=600
 		echo -e "\nNOTICE: timeout '$2' has been set to $t seconds\n"
 		shift 2; runcmd=1
-	else
-		echo -e "\nUSAGE: cchace [ --time 14400 | --save '.gitpasswd' | --stop ]\n"
+	elif [ "x$1" == "x--help" ]; then
+		echo -e "\nUSAGE: cchace [ --time 14400 | --save '.gitpasswd' | --stop | --help ]\n"
 		return
 	fi
 	git config credential.helper store
