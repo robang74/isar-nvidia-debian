@@ -110,7 +110,7 @@ You can load the repositroy shell profile in this way:
 
 to lod the git functions and local scripts aliases
 
-	build, clean, insta, wicshell, wicqemu
+	build, clean, wicinst, wicshell, wicqemu
 
 Otherwise you can use this by command line:
 
@@ -158,7 +158,7 @@ or, if bmap-tools are installed,
 
 or use this script
 
-    sudo ./insta.sh /dev/${USBDISK}
+    sudo ./wicinst.sh /dev/${USBDISK}
 
 
 License
