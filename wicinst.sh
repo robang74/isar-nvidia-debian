@@ -17,6 +17,8 @@ for i in 1 2; do
 		file=${1/file:/}
 	elif echo "$1" | grep -qe "^pigz:"; then
 		pigz=${1/pigz:/}
+	elif echo "$1" | grep -qe "^vmdk:"; then
+		vmdk=${1/vmdk:/}
 	elif [ -e "$1" ]; then
 		fimg=$1
 	fi
@@ -46,7 +48,7 @@ fi
 size=$(du -b $fimg | cut -f1)
 szmb=$(du -m $fimg | cut -f1)
 echo
-echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz} ..."
+echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
 
 if [ -n "$bdev" ]; then
 	time (sudo dd if=$fimg bs=1M of=$bdev status=progress; sync)
@@ -54,5 +56,7 @@ elif [ -n "$file" ]; then
 	time (cp -paf $fimg $file; sync $file)
 elif [ -n "$pigz" ]; then
 	time (pigz -c $fimg | dd bs=1M status=progress >$pigz; sync $pigz)
+elif [ -n "$vmdk" ]; then
+	time (qemu-img convert -pO vmdk $fimg $vmdk; sync $vmdk)
 fi
 echo
