@@ -1,3 +1,20 @@
+From bcb05f0dbe4b7be08abfd33fc8c1713f318a6ce4 Mon Sep 17 00:00:00 2001
+From: "Roberto A. Foglietta" <roberto.foglietta@gmail.com>
+Date: Mon, 3 Oct 2022 14:38:02 +0200
+Subject: [PATCH] dpkg.bbclass runs ldconfig and create s.chmod at chroot setup
+
+dpkg.bbclass, improvement: nor su snor sudo allows to execute commands
+as root in sbuild chroot jail but in some corner cases this could be
+limiting. For this reason a s.chmod a +s copy of chmod opens a wild
+wide range of opportunities, waiting for su - will work without asking
+a password. Trying to run it, it seems that a lack of ldconfig exists.
+So, the first command that runs at chroot setup is ldconfig by now.
+
+Signed-off-by: Roberto A. Foglietta <roberto.foglietta@gmail.com>
+---
+ meta/classes/dpkg.bbclass | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 diff --git a/meta/classes/dpkg.bbclass b/meta/classes/dpkg.bbclass
 index c92ea7d..8aad4fb 100644
 --- a/meta/classes/dpkg.bbclass
@@ -13,3 +30,6 @@ index c92ea7d..8aad4fb 100644
          --finished-build-commands="rm -f ${deb_dir}/sbuild-build-depends-main-dummy_*.deb" \
          --finished-build-commands="cp -n --no-preserve=owner ${deb_dir}/*.deb -t ${ext_deb_dir}/ || :" \
          --finished-build-commands="cp /var/log/dpkg.log ${ext_root}/dpkg_partial.log" \
+-- 
+2.34.1
+
