@@ -144,3 +144,15 @@ function pop() {
 	git stash pop
 }
 export -f pop
+
+function tagdel() {
+	git push --delete origin $1
+	git tag -d $1
+}
+export -f tagdel
+
+function tagadd() {
+	git tag $i
+	git push origin --tags
+}
+export -f tagadd
