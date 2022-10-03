@@ -19,8 +19,10 @@ function show_images() {
 }
 
 function show_current() {
-	echo "current: $(basename $(readlink -e eval-image.bb))" |\
-		 sed -e "s,eval-image-\(.*\).bb,\\1,"
+	rf=$(readlink -e eval-image.bb)
+	test ! -f "$rf" && rm -f eval-image.bb
+	rf=$(basename "$rf")
+	echo "current: $rf" | sed -e "s,eval-image-\(.*\).bb,\\1,"
 }
 
 if [ "$(whoami)" == "root" ]; then
