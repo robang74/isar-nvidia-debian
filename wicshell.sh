@@ -64,6 +64,8 @@ if [ "$(whoami)" != "root" ]; then
         exit $?
 fi
 
+cd $(dirname $0)
+
 if [ -e "$1" ]; then
 	fimg=$(readlink -e $1)
 fi

@@ -31,6 +31,8 @@ if [ "$(whoami)" == "root" ]; then
         exit 1
 fi
 
+cd $(dirname $0)
+
 topdir=$PWD
 cd recipes-core/images/
 if [ "$1" == "" -a ! -e eval-image.bb ]; then
@@ -63,7 +65,7 @@ else
 			echo -n "A target exists, clean isar? (y/N) "
 			read key && echo
 			ln -sf $1 eval-image.bb
-			[ "$key" == "y" ] && $(dirname $0)/clean.sh isar
+			[ "$key" == "y" ] && ${topdir}/clean.sh isar
 		fi
 	fi
 	set --

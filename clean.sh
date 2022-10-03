@@ -16,6 +16,8 @@ function print_help() {
 	echo
 }
 
+cd $(dirname $0)
+
 case $1 in
 	all) sudo rm -rf build isar
 		;;	

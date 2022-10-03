@@ -8,6 +8,8 @@
 # SPDX-License-Identifier: MIT
 #
 
+cd $(dirname $0)
+
 for i in 1 2; do
 	if [ -b "$1" ]; then
 		bdev=$1

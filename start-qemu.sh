@@ -35,6 +35,8 @@ function usage()
 	exit 1
 }
 
+cd $(dirname $0)
+
 if [ -n "${QEMU_PATH}" ]; then
 	QEMU_PATH="${QEMU_PATH}/"
 fi
