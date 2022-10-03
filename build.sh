@@ -21,8 +21,7 @@ function show_images() {
 function show_current() {
 	rf=$(readlink -e eval-image.bb)
 	test ! -f "$rf" && rm -f eval-image.bb
-	rf=$(basename "$rf")
-	echo "current: $rf" | sed -e "s,eval-image-\(.*\).bb,\\1,"
+	basename "$rf" | sed -e "s,eval-image-\(.*\).bb,\\1,"
 }
 
 if [ "$(whoami)" == "root" ]; then
@@ -47,15 +46,19 @@ elif [ "$1" == "--help" -o "$1" == "-h"  ]; then
 	echo
 	show_images
 	echo
-	show_current
+	echo current: $(show_current)
 	echo
 	exit 1
 else
 	test -e "eval-image-$1.bb" && set -- "eval-image-$1.bb"
 	if [ -e "$1" -a -e "$topdir/build" ]; then
-		if ! ln -s $1 eval-image.bb 2>/dev/null; then
+		if [ "$1" == "eval-image-$(show_current).bb" ]; then
 			echo
-			show_current
+			echo current: $(show_current)
+			echo
+		elif ! ln -s $1 eval-image.bb 2>/dev/null; then
+			echo
+			echo current: $(show_current)
 			echo
 			echo -n "A target exists, clean isar? (y/N) "
 			read key && echo
