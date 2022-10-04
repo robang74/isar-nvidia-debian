@@ -84,9 +84,31 @@ a custom configuration and patches like this one:
 
 that unlock AMD Ryzen CPUs a more +51% of computation power lost due to old bug.
 
-**Legal note**:
+(\*) **Legal notes**
 
- - (\*) no any warranty is granted and further license change might happen. 
+ - no any warranty is granted and further license change might happen. 
+ - debian legal ml https://lists.debian.org/debian-legal/2022/10/msg00004.html
+
+
+Virtual disk 'build me' download
+--------------------------------
+
+This Microsoft OneDrive link works with a WWW browser only:
+
+ - https://1drv.ms/u/s!ArH4FO-H0IhygjcTshG3NXrcnXWq
+
+and let everyone without any authentication to download a virtual disk image:
+
+ - isar-debian-buildme.vmdk.7z (274 MB)
+
+which the integrity could be verified with these two hashes:
+
+ - md5sum e6550fd4a40b114e01fe430a975f486d
+ - sha256sum ecbeb74efc12f6f03efcbe74f8761037303d6495b90496dbdbaa36fc86443af2
+
+and let every Microsoft Windows users to build its own image using a virtual
+machine like Oracle VirtualBox. Please note that in the VM settings you should
+activate the EUFI boot (Settings, System, Enable EFI (special OSes only).
 
 
 Dependencies
