@@ -18,6 +18,7 @@ SRC_URI = " \
 	file://profile \
 	file://postinst \
 	file://nvidia-cuda-test.sh \
+	file://vbox-guest-install.sh \
 "
 
 user="debraf"
@@ -30,6 +31,7 @@ do_install() {
 	install -v -d ${root}/.config/htop
 	install -v -m 644 profile ${root}/.profile
 	install -v -m 644 htoprc ${root}/.config/htop
+	install -v -m 755 vbox-guest-install.sh ${root}
 
 	install -v -d ${home}/.config/htop
 	install -v -m 644 htoprc ${home}/.config/htop
