@@ -153,7 +153,12 @@ function tagdel() {
 export -f tagdel
 
 function tagadd() {
-	git tag $i
+	git tag $1
 	git push origin --tags
 }
 export -f tagadd
+
+function reflog() {
+	git reflog "$@"
+}
+export -f reflog
