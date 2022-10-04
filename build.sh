@@ -14,7 +14,7 @@ function kcbuild() {
         echo
 }
 
-function show_images() {
+function print_images() {
 	sed -e "s,^eval-image-\(.*\).bb,  - \\1," README.txt
 }
 
@@ -22,6 +22,10 @@ function show_current() {
 	rf=$(readlink -e eval-image.bb)
 	test ! -f "$rf" && rm -f eval-image.bb
 	basename "$rf" | sed -e "s,eval-image-\(.*\).bb,\\1,"
+}
+
+function print_current() {
+	show_current | sed -e "s,\(.*\),current: \\1,"
 }
 
 if [ "$(whoami)" == "root" ]; then
@@ -33,33 +37,38 @@ fi
 
 cd $(dirname $0)
 
+doimg=0
 topdir=$PWD
 cd recipes-core/images/
+if [ -e "eval-image-$1.bb" ]; then
+	set -- "eval-image-$1.bb"
+	doimg=1
+elif [ -e "$1.bb" ]; then
+	set -- "$1.bb"
+	doimg=1
+elif [ -e "$1" ]; then
+	doimg=1
+fi
 if [ "$1" == "" -a ! -e eval-image.bb ]; then
 	echo
 	echo "ERROR: no any target defined, choose one:"
 	echo
-	show_images
+	print_images
 	echo
 	exit 1
 elif [ "$1" == "--help" -o "$1" == "-h"  ]; then
 	echo
 	echo "USAGE: $(basename $0) <one-target-here-below>"
 	echo
-	show_images
+	print_images
 	echo
-	echo current: $(show_current)
+	print_current
 	echo
 	exit 1
-elif [ "$1" != "" ]; then
+elif [ "$doimg" == "1" ]; then
 	echo
-	echo "target: $1"
+	print_current
 	echo
-else
-	echo
-	echo current: $(show_current)
-	echo
-	test -e "eval-image-$1.bb" && set -- "eval-image-$1.bb"
 	if [ -e "$1" -a -e "$topdir/build" ]; then
 		if [ "$1" == "eval-image-$(show_current).bb" ]; then
 			true
@@ -72,6 +81,14 @@ else
 		fi
 	fi
 	set --
+elif [ "$1" != "" ]; then
+	echo
+	echo "target: $1"
+	echo
+else
+	echo
+	print_current
+	echo
 fi
 cd - >/dev/null
 
