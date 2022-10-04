@@ -8,4 +8,5 @@ mkdir -p /mnt/iso
 mount -o loop /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/iso
 bash /mnt/iso/VboxLinuxAdditions.run
 umount /mnt/iso
+usermod -aG vboxsf debraf
 echo "reboot, please"
