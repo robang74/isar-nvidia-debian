@@ -10,7 +10,7 @@
 
 inherit image
 
-ROOTFS_APT_ARGS += " --no-install-suggests --fix-missing"
+ROOTFS_APT_ARGS += " --no-install-suggests --fix-missing --fix-broken"
 DESCHEAD = "${MACHINE} evaluation image"
 DESCRIPTION = "${DESCHEAD}"
 

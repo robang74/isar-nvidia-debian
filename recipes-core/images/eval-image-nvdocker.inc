@@ -15,4 +15,9 @@ IMAGE_PREINSTALL += " nvidia-docker2 docker-ce libcuda1=${nver} \
 	libnvidia-ml1=${nver} nvidia-smi=${nver} nvidia-driver-bin=${nver} \
 "
 
+# RAF: dependencies to keep with the version despite the apt attitude for the newest
+IMAGE_PREINSTALL += "libnvidia-ptxjitcompiler1=${nver} libnvidia-nvvm4=${nver} \
+	nvidia-alternative=${nver} \
+"
+
 IMAGE_INSTALL += " nvidia-modules-${KERNEL_NAME}"

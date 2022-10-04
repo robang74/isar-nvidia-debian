@@ -10,4 +10,5 @@
 
 inherit dpkg-repackage
 
-SED_REGEX = "s/nvidia-driver (>= [0-9.]*), //"
+SED_REGEX = "\"s/nvidia-driver (>= [0-9.]*), //\""
+SED_REGEX += "-e \"s/Conflicts: .*//\""

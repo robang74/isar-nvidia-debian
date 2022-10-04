@@ -30,6 +30,13 @@ IMAGE_PREINSTALL += "cuda-gdb-${cver} cuda-cupti-dev-${cver} \
 	libnpp-dev-${cver} libnvjpeg-dev-${cver} \
 "
 
+# RAF: dependencies to keep with the version despite the apt attitude for the newest
+IMAGE_PREINSTALL += "nvidia-opencl-icd=${nver} libnvidia-compiler=${nver} \
+	libnvoptix1=${nver} libnvcuvid1=${nver} libnvidia-allocator1=${nver} \
+	libnvidia-opticalflow1=${nver} cuda-drivers=${nver} \
+	libnvidia-encode1=${nver} libnvidia-fbc1=${nver} \
+"
+
 IMAGE_INSTALL += " nvidia-fs cuda-drivers-${pver}"
 IMAGE_PREINSTALL += " cuda-demo-suite-${cver}"
 IMAGE_PREINSTALL += " nvidia-gds-${cver}"
