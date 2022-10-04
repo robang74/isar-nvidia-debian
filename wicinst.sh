@@ -57,6 +57,13 @@ elif [ -n "$file" ]; then
 elif [ -n "$pigz" ]; then
 	time (pigz -c $fimg | dd bs=1M status=progress >$pigz; sync $pigz)
 elif [ -n "$vmdk" ]; then
+	if ! which qemu-img >/dev/null; then
+		echo
+		echo "WARNING: qemu-utils is missing, press a ENTER to install"
+		echo
+		read key
+		sudo apt install -f qemu-utils
+	fi
 	time (qemu-img convert -pO vmdk $fimg $vmdk; sync $vmdk)
 fi
 echo
