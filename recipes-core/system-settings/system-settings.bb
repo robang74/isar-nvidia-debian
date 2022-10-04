@@ -14,15 +14,16 @@ DESCRIPTION = "system settings"
 DEBIAN_DEPENDS = "openssh-server"
 
 SRC_URI = " \
-    file://issue.1 \
-    file://postinst \
-    file://ethernet \
-    file://rc.local \
-    file://rc.1stboot \
-    file://nvidia-nouveau.conf \
-    file://10-overlay-users.conf \
-    file://20-wired-ethernet.conf \
-    file://10-unprivileged-userns-clone.conf \
+	file://issue.1 \
+	file://postinst \
+	file://ethernet \
+	file://rc.local \
+	file://rc.1stboot \
+	file://nvidia-nouveau.conf \
+	file://99-default-link.conf \
+	file://10-overlay-users.conf \
+	file://20-wired-ethernet.conf \
+	file://10-unprivileged-userns-clone.conf \
 "
 
 do_install() {
@@ -41,6 +42,9 @@ do_install() {
 	install -v -m 644 ${WORKDIR}/10-overlay-users.conf ${D}/etc/udev/rules.d
 	install -v -m 644 ${WORKDIR}/20-wired-ethernet.conf ${D}/etc/udev/rules.d
 
-	install -v -d ${D}//etc/sysctl.d
-	install -v -m 644 ${WORKDIR}/10-unprivileged-userns-clone.conf ${D}//etc/sysctl.d
+	install -v -d ${D}/etc/sysctl.d
+	install -v -m 644 ${WORKDIR}/10-unprivileged-userns-clone.conf ${D}/etc/sysctl.d
+
+	install -v -d ${D}/etc/systemd/network
+	install -v -m 644 ${WORKDIR}/99-default-link.conf ${D}/etc/systemd/network
 }
