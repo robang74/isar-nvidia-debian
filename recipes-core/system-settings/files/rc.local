@@ -12,7 +12,11 @@
 while ! /usr/sbin/ntpdate time.ien.it; do sleep 5; done >/dev/null 2>&1 &
 
 # RAF: enable the ECC RAM and unlock the access for the users
-/usr/bin/nvidia-smi -e 1 2>&1 >/dev/null &
+test -x /usr/bin/nvidia-smi && \
+	/usr/bin/nvidia-smi -e 1 2>&1 >/dev/null &
+
+# RAF: to reduce log verbosity in console
+dmesg -n1
 
 # RAF: just at the 1st boot
 [ -x /etc/rc.1stboot ] && /etc/rc.1stboot
