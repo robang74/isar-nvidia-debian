@@ -21,11 +21,9 @@ cd $(dirname $0)
 case $1 in
 	all) sudo rm -rf build isar
 		;;	
-	tmp) sudo rm -rf build/tmp
-		;;
 	kas) sudo ./kas-container clean
 		;;
-	isar) ./kas-container --isar clean
+	isar|tmp) ./kas-container --isar clean
 		;;
 	*) print_help
 		;;
