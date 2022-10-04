@@ -19,7 +19,7 @@ function print_help() {
 cd $(dirname $0)
 
 case $1 in
-	all) sudo rm -rf build isar
+	all) sudo rm -rf build/tmp build/sstate-cache
 		;;	
 	kas) sudo ./kas-container clean
 		;;
