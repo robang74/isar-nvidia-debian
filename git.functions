@@ -167,3 +167,13 @@ function reflog() {
 	git reflog "$@"
 }
 export -f reflog
+
+function push() {
+	git push "$@"
+}
+export -f push
+
+function pull() {
+	git pull "$@"
+}
+export -f pull
