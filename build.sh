@@ -51,6 +51,10 @@ elif [ "$1" == "--help" -o "$1" == "-h"  ]; then
 	echo current: $(show_current)
 	echo
 	exit 1
+elif [ "$1" != "" ]; then
+	echo
+	echo "target: $1"
+	echo
 else
 	echo
 	echo current: $(show_current)
