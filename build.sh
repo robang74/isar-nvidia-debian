@@ -52,16 +52,15 @@ elif [ "$1" == "--help" -o "$1" == "-h"  ]; then
 	echo
 	exit 1
 else
+	echo
+	echo current: $(show_current)
+	echo
 	test -e "eval-image-$1.bb" && set -- "eval-image-$1.bb"
 	if [ -e "$1" -a -e "$topdir/build" ]; then
 		if [ "$1" == "eval-image-$(show_current).bb" ]; then
-			echo
-			echo current: $(show_current)
-			echo
+			true
 		elif ! ln -s $1 eval-image.bb 2>/dev/null; then
-			echo
-			echo current: $(show_current)
-			echo
+			true
 			echo -n "A target exists, clean isar? (y/N) "
 			read key && echo
 			ln -sf $1 eval-image.bb
