@@ -20,3 +20,6 @@ dmesg -n1
 
 # RAF: just at the 1st boot
 [ -x /etc/rc.1stboot ] && /etc/rc.1stboot
+
+# RAF: exit nicely
+true
