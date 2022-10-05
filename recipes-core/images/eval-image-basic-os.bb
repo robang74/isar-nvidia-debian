@@ -19,5 +19,5 @@ IMAGE_PREINSTALL += "htop dos2unix lynx psmisc pigz \
 	iw wireless-tools wpasupplicant dbus net-tools \
 	ifupdown isc-dhcp-client net-tools iputils-ping \
 	kbd console-data unzip wget curl ntfs-3g dialog \
-	eject ssh lsof binutils strace \
+	eject ssh lsof binutils strace bzip2 p7zip-full \
 "

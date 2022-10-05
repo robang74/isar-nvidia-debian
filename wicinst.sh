@@ -40,7 +40,7 @@ fi
 
 if [ ! -e "$fimg" ]; then
 	echo
-	echo "ERROR: no aniy image found, abort!"
+	echo "ERROR: no any image found, abort!"
 	echo
 	exit 1
 fi
