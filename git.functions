@@ -126,7 +126,7 @@ function ccache() {
 				git status $d/.gitignore | sed -e "s,\(.*\),\t\\1," | egrep . \
 					&& echo -e "\nWARNING: add and commit this change\n"
 			fi
-			git -c credential.helper='!f() { echo "password=$(cat '$d'/.gitpasswd)"; }; f' fetch origin
+			git -c credential.helper='!f() { echo "password=$(cat '$d'/.gitpasswd)"; }; f' push --dry-run 2>/dev/null
 		else
 			git fetch origin
 		fi
