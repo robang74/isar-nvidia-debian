@@ -182,6 +182,12 @@ or use this script
 
     sudo ./wicinst.sh /dev/${USBDISK}
 
+With the script you can also trasform your image in a VMDK file:
+
+    ./wicinst.sh vmdk:image.vmdk
+
+this requires qemu-img installing the qemu-utils deb package
+
 
 License
 -------
