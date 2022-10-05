@@ -95,20 +95,26 @@ Virtual disk 'build me' download
 
 This Microsoft OneDrive link works with a WWW browser only:
 
- - https://1drv.ms/u/s!ArH4FO-H0IhygjcTshG3NXrcnXWq
+ - https://1drv.ms/u/s!ArH4FO-H0Ihygk-BrBetq62wiAkq
 
-and let everyone without any authentication to download a virtual disk image:
+and let everyone without any authentication to download a virtual machine:
 
- - isar-debian-buildme.vmdk.7z (274 MB)
+ - isar-buildme-vm.ova.7z (229 MB)
 
 which the integrity could be verified with these two hashes:
 
- - md5sum e6550fd4a40b114e01fe430a975f486d
- - sha256sum ecbeb74efc12f6f03efcbe74f8761037303d6495b90496dbdbaa36fc86443af2
+ - md5sum d7d6873f7f46658b2b6aa822ff29774a
+ - sha256sum 88c39016c198d830daf298844089f2ca9530c7464c6c8598971d56bf90069b9f
 
 and let every Microsoft Windows users to build its own image using a virtual
 machine like Oracle VirtualBox. Please note that in the VM settings you should
 activate the EUFI boot (Settings, System, Enable EFI (special OSes only).
+
+The virtual machine is accessible also by SSH using every client:
+
+ - ssh -p2022 -o StrictHostKeyChecking=no root@localhost (password root)
+
+The first action to do is to change the passwords for users: root and debraf
 
 
 Dependencies
@@ -158,9 +164,9 @@ After having created an image you can chroot into it running this command
 
 	./wicshell.sh
 
-Then you can clean everything with
+Then you can clean the ISAR project with command
 
-	./clean.sh
+	./clean.sh isar
 
 
 Installing
