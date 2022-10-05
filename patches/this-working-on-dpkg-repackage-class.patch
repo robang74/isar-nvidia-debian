@@ -1,0 +1,47 @@
+commit f348c82218d09dbfc2e7f1a2324473cefb9399a6
+Author: Roberto A. Foglietta <roberto.foglietta@gmail.com>
+Date:   Wed Oct 5 02:16:59 2022 +0200
+
+    dpkg-repackage.bbclass: working on hold packages repacked
+    
+    Signed-off-by: Roberto A. Foglietta <roberto.foglietta@gmail.com>
+
+diff --git a/classes/dpkg-repackage.bbclass b/classes/dpkg-repackage.bbclass
+index 6524b07..e0f0752 100644
+--- a/classes/dpkg-repackage.bbclass
++++ b/classes/dpkg-repackage.bbclass
+@@ -12,10 +12,13 @@
+ # SPDX-License-Identifier: MIT
+ #
+ 
++
+ inherit dpkg-prebuilt
+ 
+ SRC_URI = "apt://${PN}"
+ 
++ROOTFS_APT_ARGS += " -o DPkg::Lock::Timeout=60"
++
+ do_binary_patch[cleandirs] += "${WORKDIR}/${PN}"
+ do_binary_patch() {
+ 	test -n "${SED_REGEX}"
+@@ -33,6 +36,8 @@ do_binary_patch() {
+ 	eval sed -e "${SED_REGEX}" -i ${d}/DEBIAN/control
+ 	sed -e "s,^\(Maintainer:\).*,\\1 isar repackaged," -e "/^$/d" -i ${d}/DEBIAN/control
+ 	echo "while ! apt-mark hold ${PN} >/dev/null 2>&1; do sleep 1; done &" >> ${d}/DEBIAN/postinst
++#	trap="while sleep 0.2; do apt-mark hold ${PN} && break; done >/dev/null 2>&1 &"
++#	echo "trap \"${trap}\" EXIT SIGQUIT SIGKILL SIGTERM" >> ${d}/DEBIAN/postinst
+ 	chmod 0755 ${d}/DEBIAN/postinst
+ 	dpkg-deb -b ${d}
+ }
+diff --git a/recipes-core/images/eval-image-template.inc b/recipes-core/images/eval-image-template.inc
+index 9a9cd3b..fde6326 100644
+--- a/recipes-core/images/eval-image-template.inc
++++ b/recipes-core/images/eval-image-template.inc
+@@ -11,6 +11,7 @@
+ inherit image
+ 
+ ROOTFS_APT_ARGS += " --no-install-suggests --fix-missing --fix-broken"
++#ROOTFS_APT_ARGS += " -o DPkg::Lock::Timeout=60"
+ DESCHEAD = "${MACHINE} evaluation image"
+ DESCRIPTION = "${DESCHEAD}"
+ 
