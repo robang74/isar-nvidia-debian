@@ -19,13 +19,60 @@ function print_images() {
 }
 
 function show_current() {
-	rf=$(readlink -e eval-image.bb)
+	local rf=$(readlink -e eval-image.bb)
 	test ! -f "$rf" && rm -f eval-image.bb
 	basename "$rf" | sed -e "s,eval-image-\(.*\).bb,\\1,"
 }
 
 function print_current() {
-	show_current | sed -e "s,\(.*\),current: \\1,"
+	local vm
+	is_vmdk_set && vm="(vmdk)"
+	show_current | sed -e "s,\(.*\),current: \\1 $vm,"
+}
+
+function is_vmdk_set() {
+	diff $fn $fl >/dev/null
+}
+
+function set_vmdk_image() {
+	local vm nm="vmdk" f=$(basename ${fn})
+	[ "$1" != "$nm" ] && return 1
+	if  ! is_vmdk_set; then
+		if git status | grep -qw $f; then
+			echo
+			echo "ERROR: $f been modified, abort!"
+			echo
+			exit 1
+		fi
+		cat ${fl} >${fn}
+		echo
+		echo "NOTICE: $nm has been set"
+		return 0
+	fi
+	echo
+	echo "NOTICE: $nm currently set"
+	return 0
+}
+
+function set_norm_image() {
+	local vm nm="norm" f=$(basename ${fn})
+	[ "$1" != "$nm" ] && return 1
+	if ! is_vmdk_set; then
+		if git status | grep -qw $f; then
+			echo
+			echo "ERROR: $f been modified, abort!"
+			echo
+			exit 1
+		fi
+	else
+		git checkout ${fn} >/dev/null
+		echo
+		echo "NOTICE: $nm has been set"
+		return 0
+	fi
+	echo
+	echo "NOTICE: $nm currently set"
+	return 0
 }
 
 if [ "$(whoami)" == "root" ]; then
@@ -39,7 +86,25 @@ cd $(dirname $0)
 
 doimg=0
 topdir=$PWD
-cd recipes-core/images/
+fn="$topdir/wic/debx86.wks"
+fl="$topdir/wic/debx86-110GiB-vmdk.wks"
+
+set_vmdk_image "$1" && shift
+set_norm_image "$1" && shift
+
+cd recipes-core/images ########################################################
+
+if [ "$1" == "--help" -o "$1" == "-h"  ]; then
+	echo
+	echo "USAGE: $(basename $0) <one-target-here-below>"
+	echo
+	print_images
+	echo
+	print_current
+	echo
+	exit 1
+fi
+
 if [ -e "eval-image-$1.bb" ]; then
 	set -- "eval-image-$1.bb"
 	doimg=1
@@ -49,20 +114,12 @@ elif [ -e "$1.bb" ]; then
 elif [ -e "$1" ]; then
 	doimg=1
 fi
+
 if [ "$1" == "" -a ! -e eval-image.bb ]; then
 	echo
 	echo "ERROR: no any target defined, choose one:"
 	echo
 	print_images
-	echo
-	exit 1
-elif [ "$1" == "--help" -o "$1" == "-h"  ]; then
-	echo
-	echo "USAGE: $(basename $0) <one-target-here-below>"
-	echo
-	print_images
-	echo
-	print_current
 	echo
 	exit 1
 elif [ "$doimg" == "1" ]; then
@@ -90,10 +147,13 @@ else
 	print_current
 	echo
 fi
-cd - >/dev/null
+
+cd - >/dev/null ###############################################################
+
+set_vmdk_image "$2" 
+set_norm_image "$2"
 
 if [ ! -d isar/.git ]; then
         kcbuild --target isar-clone 2>&1 | grep -vi ERROR
 fi
-
 kcbuild ${1:+--target $1}
