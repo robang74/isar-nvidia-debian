@@ -1,0 +1,2 @@
+SHA1 (${VM_IMAGE_NAME}.vmdk) = ${VM_DKFILE_SHA}
+SHA1 (${VM_IMAGE_NAME}.ovf) = ${VM_OVFILE_SHA}

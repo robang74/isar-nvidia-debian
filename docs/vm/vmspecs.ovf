@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<Envelope ovf:version="1.0" xml:lang="en-US" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vbox="http://www.virtualbox.org/ovf/machine">
+  <References>
+    <File ovf:id="file1" ovf:href="${VM_IMAGE_NAME}.vmdk"/>
+  </References>
+  <DiskSection>
+    <Info>List of the virtual disks used in the package</Info>
+    <Disk ovf:capacity="118633397248" ovf:diskId="vmdisk1" ovf:fileRef="file1" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized" vbox:uuid="f3d1cdd9-9e7e-4a91-b884-d7db94fae6f9"/>
+  </DiskSection>
+  <NetworkSection>
+    <Info>Logical networks used in the package</Info>
+    <Network ovf:name="NAT">
+      <Description>Logical network used by this appliance.</Description>
+    </Network>
+  </NetworkSection>
+  <VirtualSystem ovf:id="${VM_IMAGE_NAME}">
+    <Info>A virtual machine</Info>
+    <ProductSection>
+      <Info>Meta-information about the installed software</Info>
+      <Product>${VM_PRODUCT_INFO}</Product>
+      <Vendor>${VM_VENDOR_INFO}</Vendor>
+      <Version>${VM_VERSION_INFO}</Version>
+      <ProductUrl>${VM_PRODUCT_URL}</ProductUrl>
+      <VendorUrl>${VM_VENDOR_URL}</VendorUrl>
+    </ProductSection>
+    <AnnotationSection>
+      <Info>A human-readable annotation</Info>
+      <Annotation>Build with ISAR an evaluation image based on Debian 11 (bullseye) selecting from nVidia GPU support (515.65.01) up to a graphic developing enviroment with the full nVidia software stack (11.7) running a standard debian kernel</Annotation>
+    </AnnotationSection>
+    <EulaSection>
+      <Info>License agreement for the virtual system</Info>
+      <License>THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</License>
+    </EulaSection>
+    <OperatingSystemSection ovf:id="96">
+      <Info>The kind of installed guest operating system</Info>
+      <Description>Debian_64</Description>
+      <vbox:OSType ovf:required="false">Debian_64</vbox:OSType>
+    </OperatingSystemSection>
+    <VirtualHardwareSection>
+      <Info>Virtual hardware requirements for a virtual machine</Info>
+      <System>
+        <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+        <vssd:InstanceID>0</vssd:InstanceID>
+        <vssd:VirtualSystemIdentifier>${VM_IMAGE_NAME}</vssd:VirtualSystemIdentifier>
+        <vssd:VirtualSystemType>virtualbox-2.2</vssd:VirtualSystemType>
+      </System>
+      <Item>
+        <rasd:Caption>2 virtual CPU</rasd:Caption>
+        <rasd:Description>Number of virtual CPUs</rasd:Description>
+        <rasd:ElementName>2 virtual CPU</rasd:ElementName>
+        <rasd:InstanceID>1</rasd:InstanceID>
+        <rasd:ResourceType>3</rasd:ResourceType>
+        <rasd:VirtualQuantity>2</rasd:VirtualQuantity>
+      </Item>
+      <Item>
+        <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
+        <rasd:Caption>1024 MB of memory</rasd:Caption>
+        <rasd:Description>Memory Size</rasd:Description>
+        <rasd:ElementName>1024 MB of memory</rasd:ElementName>
+        <rasd:InstanceID>2</rasd:InstanceID>
+        <rasd:ResourceType>4</rasd:ResourceType>
+        <rasd:VirtualQuantity>1024</rasd:VirtualQuantity>
+      </Item>
+      <Item>
+        <rasd:Address>0</rasd:Address>
+        <rasd:Caption>ideController0</rasd:Caption>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>ideController0</rasd:ElementName>
+        <rasd:InstanceID>3</rasd:InstanceID>
+        <rasd:ResourceSubType>PIIX4</rasd:ResourceSubType>
+        <rasd:ResourceType>5</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:Address>1</rasd:Address>
+        <rasd:Caption>ideController1</rasd:Caption>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>ideController1</rasd:ElementName>
+        <rasd:InstanceID>4</rasd:InstanceID>
+        <rasd:ResourceSubType>PIIX4</rasd:ResourceSubType>
+        <rasd:ResourceType>5</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:Address>0</rasd:Address>
+        <rasd:Caption>sataController0</rasd:Caption>
+        <rasd:Description>SATA Controller</rasd:Description>
+        <rasd:ElementName>sataController0</rasd:ElementName>
+        <rasd:InstanceID>5</rasd:InstanceID>
+        <rasd:ResourceSubType>AHCI</rasd:ResourceSubType>
+        <rasd:ResourceType>20</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AddressOnParent>0</rasd:AddressOnParent>
+        <rasd:Caption>disk1</rasd:Caption>
+        <rasd:Description>Disk Image</rasd:Description>
+        <rasd:ElementName>disk1</rasd:ElementName>
+        <rasd:HostResource>/disk/vmdisk1</rasd:HostResource>
+        <rasd:InstanceID>6</rasd:InstanceID>
+        <rasd:Parent>5</rasd:Parent>
+        <rasd:ResourceType>17</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+        <rasd:Caption>Ethernet adapter on 'NAT'</rasd:Caption>
+        <rasd:Connection>NAT</rasd:Connection>
+        <rasd:ElementName>Ethernet adapter on 'NAT'</rasd:ElementName>
+        <rasd:InstanceID>7</rasd:InstanceID>
+        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
+        <rasd:ResourceType>10</rasd:ResourceType>
+      </Item>
+    </VirtualHardwareSection>
+    <vbox:Machine ovf:required="false" version="1.17-linux" uuid="{42ab8f9d-4a79-4487-9aba-c3e8e8904643}" name="${VM_IMAGE_NAME}" OSType="Debian_64" snapshotFolder="snapshots" lastStateChange="2022-10-05T19:04:47Z">
+      <ovf:Info>Complete VirtualBox machine configuration in VirtualBox format</ovf:Info>
+      <Description>Build with ISAR an evaluation image based on Debian 11 (bullseye) selecting from nVidia GPU support (515.65.01) up to a graphic developing enviroment with the full nVidia software stack (11.7) running a standard debian kernel</Description>
+      <ExtraData>
+        <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
+        <ExtraDataItem name="GUI/LastNormalWindowPosition" value="46,59,1024,709"/>
+        <ExtraDataItem name="GUI/LastScaleWindowPosition" value="288,76,858,683"/>
+        <ExtraDataItem name="GUI/Scale" value="true"/>
+      </ExtraData>
+      <Hardware>
+        <CPU count="2">
+          <PAE enabled="true"/>
+          <LongMode enabled="true"/>
+          <X2APIC enabled="true"/>
+          <HardwareVirtExLargePages enabled="false"/>
+        </CPU>
+        <Memory RAMSize="1024"/>
+        <Firmware type="EFI"/>
+        <Chipset type="ICH9"/>
+        <Boot>
+          <Order position="1" device="HardDisk"/>
+          <Order position="2" device="None"/>
+          <Order position="3" device="None"/>
+          <Order position="4" device="None"/>
+        </Boot>
+        <Display controller="VMSVGA" VRAMSize="16"/>
+        <VideoCapture screens="1" file="." fps="25"/>
+        <BIOS>
+          <IOAPIC enabled="true"/>
+          <SmbiosUuidLittleEndian enabled="true"/>
+        </BIOS>
+        <Network>
+          <Adapter slot="0" enabled="true" MACAddress="0800279709D1" type="82540EM">
+            <NAT>
+              <Forwarding name="SSH" proto="1" hostport="2022" guestport="22"/>
+            </NAT>
+          </Adapter>
+          <Adapter slot="8" cable="false"/>
+          <Adapter slot="9" cable="false"/>
+          <Adapter slot="10" cable="false"/>
+          <Adapter slot="11" cable="false"/>
+          <Adapter slot="12" cable="false"/>
+          <Adapter slot="13" cable="false"/>
+          <Adapter slot="14" cable="false"/>
+          <Adapter slot="15" cable="false"/>
+          <Adapter slot="16" cable="false"/>
+          <Adapter slot="17" cable="false"/>
+          <Adapter slot="18" cable="false"/>
+          <Adapter slot="19" cable="false"/>
+          <Adapter slot="20" cable="false"/>
+          <Adapter slot="21" cable="false"/>
+          <Adapter slot="22" cable="false"/>
+          <Adapter slot="23" cable="false"/>
+          <Adapter slot="24" cable="false"/>
+          <Adapter slot="25" cable="false"/>
+          <Adapter slot="26" cable="false"/>
+          <Adapter slot="27" cable="false"/>
+          <Adapter slot="28" cable="false"/>
+          <Adapter slot="29" cable="false"/>
+          <Adapter slot="30" cable="false"/>
+          <Adapter slot="31" cable="false"/>
+          <Adapter slot="32" cable="false"/>
+          <Adapter slot="33" cable="false"/>
+          <Adapter slot="34" cable="false"/>
+          <Adapter slot="35" cable="false"/>
+        </Network>
+        <AudioAdapter codec="AD1980" driver="Pulse" enabledOut="true"/>
+        <RTC localOrUTC="UTC"/>
+        <SharedFolders>
+          <SharedFolder name="shared" hostPath="$HOME/vbox.shared" writable="true" autoMount="true" autoMountPoint="/mnt/shared"/>
+        </SharedFolders>
+        <Clipboard mode="Bidirectional"/>
+        <DragAndDrop mode="Bidirectional"/>
+        <GuestProperties>
+          <GuestProperty name="/VirtualBox/HostInfo/GUI/LanguageID" value="en_US" timestamp="1664997302046510000" flags=""/>
+        </GuestProperties>
+        <StorageControllers>
+          <StorageController name="IDE" type="PIIX4" PortCount="2" useHostIOCache="true" Bootable="true">
+            <AttachedDevice passthrough="false" type="DVD" hotpluggable="false" port="1" device="0"/>
+          </StorageController>
+          <StorageController name="SATA" type="AHCI" PortCount="1" useHostIOCache="true" Bootable="true" IDE0MasterEmulationPort="0" IDE0SlaveEmulationPort="1" IDE1MasterEmulationPort="2" IDE1SlaveEmulationPort="3">
+            <AttachedDevice nonrotational="true" type="HardDisk" hotpluggable="false" port="0" device="0">
+              <Image uuid="{f3d1cdd9-9e7e-4a91-b884-d7db94fae6f9}"/>
+            </AttachedDevice>
+          </StorageController>
+        </StorageControllers>
+      </Hardware>
+    </vbox:Machine>
+  </VirtualSystem>
+</Envelope>

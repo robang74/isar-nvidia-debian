@@ -1,2 +1,3 @@
 - build clean just isar and suppress clean
 - dpkg-repackage.bbclass while collision to fix
+- do an OVA template with git config --list
