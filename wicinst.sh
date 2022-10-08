@@ -76,6 +76,6 @@ elif [ -n "$vmdk" ]; then
 		read key
 		sudo apt install -f qemu-utils
 	fi
-	time (qemu-img convert -pO vmdk "$fimg" "$vmdk"; sync "$vmdk")
+	time (qemu-img convert -p -f raw "$fimg" -O vmdk "$vmdk"; sync "$vmdk")
 fi
 echo
