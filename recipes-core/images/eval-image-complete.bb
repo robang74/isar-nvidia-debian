@@ -37,10 +37,17 @@ IMAGE_PREINSTALL += "nvidia-opencl-icd=${nver} libnvidia-compiler=${nver} \
 	libnvidia-encode1=${nver} libnvidia-fbc1=${nver} \
 "
 
+# RAF: dependencies to keep with the version despite the apt attitude for the newest, p2
+IMAGE_PREINSTALL += "libxnvctrl-dev=${nver} libxnvctrl0=${nver} nvidia-cuda-mps=${nver} \
+	nvidia-detect=${nver} nvidia-libopencl1=${nver} nvidia-opencl-common=${nver} \
+	nvidia-settings=${nver} nvidia-xconfig=${nver} libnvidia-cfg1=${nver} \
+"
+
 IMAGE_INSTALL += " nvidia-fs cuda-drivers-${pver}"
 IMAGE_PREINSTALL += " cuda-demo-suite-${cver}"
 IMAGE_PREINSTALL += " nvidia-gds-${cver}"
 
+# RAF: graphical enviroment support for the nVidia Eclipsed base development GUI
 IMAGE_PREINSTALL += " task-gnome-desktop \
 	firefox-esr mesa-utils network-manager \
 	cuda-nsight-${cver} \
