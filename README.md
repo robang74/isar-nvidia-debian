@@ -116,6 +116,8 @@ The virtual machine is accessible also by SSH using every client:
 
 The first action to do is to change the passwords for users: root and debraf
 
+The first time to access the local apt cache 'sudo apt update" is needed
+
 
 Dependencies
 ------------
@@ -142,7 +144,7 @@ to lod the git functions and local scripts aliases
 
 Otherwise you can use this by command line:
 
-	./build.sh [ $BBTARGET | $IMAGE ]
+	./build.sh [ $BBTARGET | $IMAGE ] [ norm | vmdk ]
 
 The Bitbake target could be any recipe.
 
@@ -193,6 +195,18 @@ With the script you can also transform your image in a VMDK file:
     ./wicinst.sh vmdk:image.vmdk
 
 this requires qemu-img installing the qemu-utils deb package
+
+
+Example
+-------
+
+For example to create the 'build me' vmdk 110 GiB image:
+
+	./clean.sh isar
+	./build.sh build-me vmdk
+	./wicinst vmdk:image-buildme-vm.vmdk
+
+then in docs/vm there is the template to create the OVA package
 
 
 License
