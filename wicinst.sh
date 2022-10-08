@@ -10,7 +10,7 @@
 
 cd $(dirname $0)
 
-for i in 1 2; do
+for i in 1 2 3; do
 	if [ -b "$1" ]; then
 		bdev="$1"
 	elif echo "$1" | grep -qe "^file:"; then
@@ -21,6 +21,9 @@ for i in 1 2; do
 		vmdk="${1/vmdk:/}"
 	elif [ -e "$1" ]; then
 		fimg="$1"
+	elif [ "x$1" == "x--nosync" ]; then
+		sync() { echo "OPTION: no sync"; }
+		export -f sync
 	fi
 	shift
 done
