@@ -42,7 +42,7 @@ IMAGE_PREINSTALL += " cuda-demo-suite-${cver}"
 IMAGE_PREINSTALL += " nvidia-gds-${cver}"
 
 IMAGE_PREINSTALL += " task-gnome-desktop \
-	firefox-esr mesa-utils \
+	firefox-esr mesa-utils network-manager \
 	cuda-nsight-${cver} \
 "
 
