@@ -51,7 +51,16 @@ echo
 echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
 
 if [ -n "$bdev" ]; then
-	time (sudo dd if="$fimg" bs=1M of=$bdev status=progress; sync)
+	if which bmaptool >/dev/null && test -f ${fimg/.wic/}.bmap; then
+		time (sudo bmaptool copy $fimg $bdev; sync)
+	else
+		echo
+		echo "WARNING: bmaptool allows to write on a block device much faster than dd"
+		echo
+		echo "         sudo apt install bmap-tools"
+		echo
+		time (sudo dd if="$fimg" bs=1M of=$bdev status=progress; sync)
+	fi
 elif [ -n "$file" ]; then 
 	time (cp -paf "$fimg" "$file"; sync "$file")
 elif [ -n "$pigz" ]; then
