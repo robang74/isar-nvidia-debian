@@ -208,6 +208,10 @@ For example to create the 'build me' vmdk 110 GiB image:
 
 then in docs/vm there is the template to create the OVA package
 
+	./makeova.sh
+
+do the magic to create the OVA archive in the top folder
+
 
 License
 -------
