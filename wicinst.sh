@@ -8,6 +8,10 @@
 # SPDX-License-Identifier: MIT
 #
 
+function vmdk_get_uuid() {
+        dd if="$1" count=16 2>/dev/null | strings | sed -ne "s,ddb.uuid.image=\"\(.*\)\",\\1,p"
+}
+
 cd $(dirname $0)
 
 for i in 1 2 3; do
@@ -76,6 +80,22 @@ elif [ -n "$vmdk" ]; then
 		read key
 		sudo apt install -f qemu-utils
 	fi
-	time (qemu-img convert -p -f raw "$fimg" -O vmdk "$vmdk"; sync "$vmdk")
+	uuid=$(fdisk -l "$fimg" | sed -ne "s,Disk identifier: \(.*\),\\1,p" | tr [A-Z] [a-z])
+	echo "UUID read: $uuid"
+	if which VBoxManage >/dev/null; then
+		uuid=${uuid:-$(cat /proc/sys/kernel/random/uuid)}
+		echo "UUID used: $uuid"
+		rm -f "$vmdk"
+		time (VBoxManage convertfromraw "$fimg" --format VMDK "$vmdk" --uuid "$uuid"; sync "$vmdk")
+	elif which qemu-img >/dev/null; then
+		time (qemu-img convert -p -f raw "$fimg" -O vmdk "$vmdk"; sync "$vmdk")
+		uuid=$(vmdk_get_uuid "$vmdk")
+		echo "UUID used: ${uuid:-none}"
+	else
+		echo
+		echo "ERROR: no VBoxManage nor qemu-img are available, abort!"
+		echo
+		exit 1
+	fi
 fi
 echo
