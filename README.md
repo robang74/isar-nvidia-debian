@@ -95,16 +95,16 @@ Virtual disk 'build me' download
 
 This Microsoft OneDrive link works with a WWW browser only:
 
-- https://1drv.ms/u/s!ArH4FO-H0Ihygk-BrBetq62wiAkq
+- https://1drv.ms/u/s!ArH4FO-H0IhyglZou3fYJQJWngff
 
 and let everyone without any authentication to download a virtual machine:
 
-- isar-buildme-vm.ova.7z (229 MB)
+- isar-buildme-vm.ova.7z (237 MB)
 
 which the integrity could be verified with these two hashes:
 
-- md5sum d7d6873f7f46658b2b6aa822ff29774a
-- sha256sum 88c39016c198d830daf298844089f2ca9530c7464c6c8598971d56bf90069b9f
+- md5sum bab4a33a56144d8346d478474fdc1673
+- sha256sum e1ba4d5e48f46827a23b92356d61d25b45ef8a62
 
 and let every Microsoft Windows user to build its own image using a virtual
 machine like Oracle VirtualBox. Please note that in the VM settings you should
