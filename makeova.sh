@@ -63,10 +63,10 @@ sed -i "s,\${VM_IMAGE_NAME},$VM_IMAGE_NAME,g" "$d/$fimg.ovf"
 
 disk="$d/$fimg-disk001.vmdk"
 
-echo "Open Virtual Format 2.0 written in $d/$fimg.ovf"
+echo "Open Virtual Format 1.0 written in $d/$fimg.ovf"
 echo "Copying the VMDK image in $disk ..."
 
-$topdir/wicinst.sh vmdk:"$disk" #--nosync
+$topdir/wicinst.sh vmdk:"$disk" --nosync
 
 echo -n "Retriving the SIZE and the UUID of the new VMDK image ..."
 VM_IMAGE_UUID=$(vmdk_get_uuid "$d/$disk")
@@ -95,22 +95,20 @@ echo " OK"
 
 echo "SHA1 ($disk) = ${VM_DKFILE_SHA}" > "$d/$fimg.mf"
 echo "SHA1 ($fimg.ovf) = ${VM_OVFILE_SHA}" >> "$d/$fimg.mf"
-echo "OVF 2.0 manifest written in $d/$fimg.mf"
+echo "OVF 1.0 manifest written in $d/$fimg.mf"
 
 echo -n "Creating the OVA archive ... " 
 cd $d
 tar cf $topdir/$fimg.ova *  
-sync $topdir/$fimg.ova
+#sync $topdir/$fimg.ova
 echo " OK"
 echo "Open Virtual Appliance created in $topdir/$fimg.ova"
 rm -rf "$d"
 cd $topdir
-exit
+echo && exit
 
 echo "Compressing OVA archiver with 7z ..."
 #7z a -mx9 -sdel $fimg.ova.7z $fimg.ova
 7z a -mx9 $fimg.ova.7z $fimg.ova
 echo "Compressed OVA archive written in $topdir/$fimg.ova.7z"
-rm -rf docks/vm/tmp
-sync
-
+echo
