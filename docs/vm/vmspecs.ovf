@@ -54,12 +54,12 @@
       </Item>
       <Item>
         <rasd:AllocationUnits>MegaBytes</rasd:AllocationUnits>
-        <rasd:Caption>4096 MB of memory</rasd:Caption>
+        <rasd:Caption>2048 MB of memory</rasd:Caption>
         <rasd:Description>Memory Size</rasd:Description>
-        <rasd:ElementName>4096 MB of memory</rasd:ElementName>
+        <rasd:ElementName>2048 MB of memory</rasd:ElementName>
         <rasd:InstanceID>2</rasd:InstanceID>
         <rasd:ResourceType>4</rasd:ResourceType>
-        <rasd:VirtualQuantity>4096</rasd:VirtualQuantity>
+        <rasd:VirtualQuantity>2048</rasd:VirtualQuantity>
       </Item>
       <Item>
         <rasd:Address>0</rasd:Address>
@@ -111,12 +111,6 @@
     <vbox:Machine ovf:required="false" version="1.18-linux" uuid="{cc4b154e-2364-4366-b54c-9456a1d0d314}" name="ISAR nVidia Debian evaluation VM" OSType="Debian_64" snapshotFolder="Snapshots" lastStateChange="2022-10-08T19:40:52Z">
       <ovf:Info>Complete VirtualBox machine configuration in VirtualBox format</ovf:Info>
       <Description>Build with ISAR an evaluation image based on Debian 11 (bullseye) selecting from nVidia GPU support (515.65.01) up to a graphic developing enviroment with the full nVidia software stack (11.7) running a standard debian kernel</Description>
-      <ExtraData>
-        <ExtraDataItem name="GUI/LastCloseAction" value="PowerOff"/>
-        <ExtraDataItem name="GUI/LastNormalWindowPosition" value="46,59,1024,709"/>
-        <ExtraDataItem name="GUI/LastScaleWindowPosition" value="288,76,858,683"/>
-        <ExtraDataItem name="GUI/Scale" value="true"/>
-      </ExtraData>
       <Hardware>
         <CPU count="2">
           <PAE enabled="true"/>
@@ -124,7 +118,7 @@
           <X2APIC enabled="true"/>
           <HardwareVirtExLargePages enabled="false"/>
         </CPU>
-        <Memory RAMSize="4096"/>
+        <Memory RAMSize="2048"/>
         <Firmware type="EFI"/>
         <Chipset type="ICH9"/>
         <Boot>
@@ -175,9 +169,6 @@
         </Network>
         <AudioAdapter codec="AD1980" driver="Pulse" enabledOut="true"/>
         <RTC localOrUTC="UTC"/>
-        <SharedFolders>
-          <SharedFolder name="shared" hostPath="/home/roberto/vbox/shared" writable="true" autoMount="true" autoMountPoint="/mnt/shared"/>
-        </SharedFolders>
         <Clipboard mode="Bidirectional"/>
         <DragAndDrop mode="Bidirectional"/>
         <GuestProperties>
