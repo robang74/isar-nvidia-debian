@@ -46,8 +46,7 @@ VM_VERSION_INFO="$(git -C ${topdir} describe --tags --dirty --match 'v[0-9].[0-9
 VM_PRODUCT_INFO="ISAR nVidia Debian evaluation virtual machine"
 VM_PRODUCT_URL="https://github.com/robang74/isar-nvidia-debian"
 VM_VENDOR_INFO="$(get_field_value "user.name")"
-VM_VENDOR_URL="mailto:$(get_field_value "user.email" | sed -e 's,@,%40,g')"
-VM_VENDOR_URL="mailto:$(get_field_value "user.email")"
+VM_VENDOR_URL="$(get_field_value "user.email")"
 VM_IMAGE_NAME="$fimg"
 
 rm -rf "$d"
