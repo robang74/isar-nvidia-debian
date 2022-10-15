@@ -58,7 +58,7 @@ echo
 echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
 
 if [ -n "$bdev" ]; then
-	if which bmaptool >/dev/null && test -f ${fimg/.wic/}.bmap; then
+	if which bmaptool >/dev/null && test -f "$fimg.bmap"; then
 		time (sudo bmaptool copy $fimg $bdev; sync)
 	else
 		echo
