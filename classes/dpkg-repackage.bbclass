@@ -32,7 +32,7 @@ do_binary_patch() {
 	dpkg-deb -R ${p} ${d}
 	eval sed -e "${SED_REGEX}" -i ${d}/DEBIAN/control
 	sed -e "s,^\(Maintainer:\).*,\\1 isar repackaged," -e "/^$/d" -i ${d}/DEBIAN/control
-	echo "while ! apt-mark hold ${PN} >/dev/null 2>&1; do sleep 1; done &" >> ${d}/DEBIAN/postinst
+	echo "while ! apt-mark hold ${PN} >/dev/null 2>&1; do sleep 4; done &" >> ${d}/DEBIAN/postinst
 	chmod 0755 ${d}/DEBIAN/postinst
 	dpkg-deb -b ${d}
 }
