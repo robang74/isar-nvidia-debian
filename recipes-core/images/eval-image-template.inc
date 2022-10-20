@@ -23,3 +23,7 @@ IMAGE_INSTALL += "expand-on-first-boot"
 
 WIC_IMAGER_INSTALL += "btrfs-progs"
 WIC_DEPLOY_PARTITIONS = "0"
+
+rootfs_install_sstate_prepare() {
+	true
+}
