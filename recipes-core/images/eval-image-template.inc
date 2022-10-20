@@ -17,7 +17,6 @@ DESCRIPTION = "${DESCHEAD}"
 IMAGE_INSTALL += "users-settings"
 IMAGE_INSTALL += "system-settings"
 IMAGE_INSTALL += "sshd-regen-keys"
-IMAGE_INSTALL += "isar-exclude-docs"
 IMAGE_INSTALL += "isar-disable-apt-cache"
 IMAGE_INSTALL += "expand-on-first-boot"
 
