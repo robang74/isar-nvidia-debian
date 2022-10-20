@@ -10,8 +10,7 @@
 
 inherit dpkg-repackage
 
-nver="515.65.01-1"
-SRC_URI = "apt://${PN}=${nver}"
+SRC_URI = "apt://${PN}=${NVIDIA_DRIVER_VERSION}-1"
 
 SED_REGEX = "\"s/nvidia-driver (>= [0-9.]*), //\""
 SED_REGEX += "-e \"s/Conflicts: .*//\""

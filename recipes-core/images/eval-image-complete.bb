@@ -43,7 +43,7 @@ IMAGE_PREINSTALL += "libxnvctrl-dev=${nver} libxnvctrl0=${nver} nvidia-cuda-mps=
 	nvidia-settings=${nver} nvidia-xconfig=${nver} libnvidia-cfg1=${nver} \
 "
 
-IMAGE_INSTALL += " nvidia-fs cuda-drivers-${pver}"
+IMAGE_INSTALL += " nvidia-fs cuda-drivers-515"
 IMAGE_PREINSTALL += " cuda-demo-suite-${cver}"
 IMAGE_PREINSTALL += " nvidia-gds-${cver}"
 

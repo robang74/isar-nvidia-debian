@@ -7,9 +7,8 @@
 # SPDX-License-Identifier: MIT
 #
 
-pver = "515"
-nver = "${pver}.65.01-1"
-cver = "11-7"
+nver = "${NVIDIA_DRIVER_VERSION}-1"
+cver = "${NVIDIA_CUDA_VERSION}"
 
 IMAGE_PREINSTALL += " nvidia-docker2 docker-ce libcuda1=${nver} \
 	libnvidia-ml1=${nver} nvidia-smi=${nver} nvidia-driver-bin=${nver} \
