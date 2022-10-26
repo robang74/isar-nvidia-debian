@@ -13,7 +13,8 @@ require eval-image-basicdev.bb
 KERNEL_NAME = ""
 DESCRIPTION = "${DESCHEAD} basic development"
 
-IMAGE_PREINSTALL += "gcc build-essential \
-	automake autoconf pkgconf git mdadm \
+IMAGE_PREINSTALL += "gcc build-essential libssl-dev bc \
+	automake autoconf pkgconf git mdadm libelf-dev \
+	linux-headers-5.13 flex bison libncurses-dev \
 "
 IMAGE_INSTALL += "linux-image-5.13"
