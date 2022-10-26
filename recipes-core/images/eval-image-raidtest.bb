@@ -16,5 +16,9 @@ DESCRIPTION = "${DESCHEAD} basic development"
 IMAGE_PREINSTALL += "gcc build-essential libssl-dev bc \
 	automake autoconf pkgconf git mdadm libelf-dev \
 	linux-headers-5.13 flex bison libncurses-dev \
+	file \
 "
+
+IMAGE_PREINSTALL += "firmware-linux-nonfree firmware-realtek"
+
 IMAGE_INSTALL += "linux-image-5.13"

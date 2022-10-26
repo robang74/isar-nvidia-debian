@@ -19,7 +19,8 @@ SRC_URI = " \
 	file://profile \
 	file://postinst \
 	file://nvidia-cuda-test.sh \
-	file://vbox-guest-install.sh \
+	file://vbox-guest-inst-by-apt.sh \
+	file://vbox-guest-inst-by-sr0.sh \
 "
 
 user="debraf"
@@ -30,14 +31,15 @@ do_install() {
 	cd ${WORKDIR}
 
 	install -v -d ${root}/.config/htop
+	install -v -m 644 vimrc ${root}/.vimrc
 	install -v -m 644 profile ${root}/.profile
 	install -v -m 644 htoprc ${root}/.config/htop
-	install -v -m 755 vbox-guest-install.sh ${root}
-	install -v -m 644 vimrc ${root}/.vimrc
 
 	install -v -d ${home}/.config/htop
 	install -v -m 644 vimrc ${home}/.vimrc
+	install -v -m 644 profile ${home}/.profile
 	install -v -m 644 htoprc ${home}/.config/htop
 	install -v -m 755 nvidia-cuda-test.sh ${home}
-	install -v -m 644 profile ${home}/.profile
+	install -v -m 755 vbox-guest-inst-by-apt.sh ${home}
+	install -v -m 755 vbox-guest-inst-by-sr0.sh ${home}
 }
