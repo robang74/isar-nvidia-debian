@@ -11,7 +11,6 @@
 require recipes-kernel/linux/linux-custom.inc
 
 kver = "5.13"
-KERNEL_NAME = "amd64"
 KBUILD_DEPENDS += " dwarves"
 KERNEL_DEFCONFIG = "defconfig-with-raid0"
 PROVIDES = "linux-image-${kver}"

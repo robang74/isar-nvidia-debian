@@ -10,6 +10,7 @@
 
 require eval-image-basicdev.bb
 
+KERNEL_NAME = ""
 DESCRIPTION = "${DESCHEAD} basic development"
 
 IMAGE_PREINSTALL += "gcc build-essential \
