@@ -23,12 +23,12 @@ function repshrink() {
 export -f repshrink
 
 function lg() {
-	git log --abbrev-commit --format=format:'* %C(bold cyan)%h%C(reset) - %C(white)%s%C(reset) %C(bold green)%d%C(reset)' --all "$@"
+	git log --abbrev-commit --format=format:'* %C(bold cyan)%h%C(reset) - %C(white)%s%C(reset) %C(bold green)%d%C(reset)' "$@"
 }
 export -f lg
 
 function lt() {
-	git log --graph --abbrev-commit --decorate --format=format:'%C(bold cyan)%h%C(reset) - %C(white)%s%C(reset) %C(bold green)%d%C(reset)' --all "$@"
+	git log --graph --abbrev-commit --decorate --format=format:'%C(bold cyan)%h%C(reset) - %C(white)%s%C(reset) %C(bold green)%d%C(reset)' "$@"
 }
 export -f lt
 
