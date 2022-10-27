@@ -10,7 +10,7 @@
 
 require eval-image-basicdev.bb
 
-KERNEL_NAME = ""
+KERNEL_NAME = "raidtest"
 DESCRIPTION = "${DESCHEAD} basic development"
 
 IMAGE_PREINSTALL += "gcc build-essential libssl-dev bc \
@@ -21,4 +21,4 @@ IMAGE_PREINSTALL += "gcc build-essential libssl-dev bc \
 
 IMAGE_PREINSTALL += "firmware-linux-nonfree firmware-realtek"
 
-IMAGE_INSTALL += "linux-image-5.13"
+IMAGE_INSTALL += "linux-image-${KERNEL_NAME}"
