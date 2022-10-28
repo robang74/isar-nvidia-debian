@@ -14,6 +14,7 @@ DESCRIPTION = "users settings"
 DEBIAN_DEPENDS = "cron"
 
 SRC_URI = " \
+	file://vimrc \
 	file://htoprc \
 	file://profile \
 	file://postinst \
@@ -32,8 +33,10 @@ do_install() {
 	install -v -m 644 profile ${root}/.profile
 	install -v -m 644 htoprc ${root}/.config/htop
 	install -v -m 755 vbox-guest-install.sh ${root}
+	install -v -m 644 vimrc ${root}/.vimrc
 
 	install -v -d ${home}/.config/htop
+	install -v -m 644 vimrc ${home}/.vimrc
 	install -v -m 644 htoprc ${home}/.config/htop
 	install -v -m 755 nvidia-cuda-test.sh ${home}
 	install -v -m 644 profile ${home}/.profile
