@@ -13,4 +13,4 @@ part --source bootimg-efi-isar --sourceparams "loader=grub-efi" --label efi --pa
 
 part / --source rootfs --fstype ext4 --label rootfs --align 1024 --use-uuid --extra-space 1G --overhead-factor 1.2
 
-bootloader --ptable gpt --timeout 3 --append "net.ifnames=0 biosdevname=0"
+bootloader --ptable gpt --timeout 3 --append "net.ifnames=0 biosdevname=0 scsi_mod.use_blk_mq=1 md_mod.use_blk_mq=1"
