@@ -15,10 +15,10 @@ DESCRIPTION = "${DESCHEAD} basic development"
 
 IMAGE_PREINSTALL += "gcc build-essential libssl-dev bc \
 	automake autoconf pkgconf git mdadm libelf-dev \
-	linux-headers-5.13 flex bison libncurses-dev \
-	file \
+	flex bison libncurses-dev file wireless-regdb \
 "
 
 IMAGE_PREINSTALL += "firmware-linux-nonfree firmware-realtek"
 
-IMAGE_INSTALL += "linux-image-${KERNEL_NAME}=5.19"
+IMAGE_INSTALL += "linux-image-${KERNEL_NAME}"
+IMAGE_INSTALL += "linux-headers-${KERNEL_NAME}"
