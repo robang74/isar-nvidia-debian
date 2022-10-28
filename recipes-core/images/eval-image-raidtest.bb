@@ -21,4 +21,4 @@ IMAGE_PREINSTALL += "gcc build-essential libssl-dev bc \
 
 IMAGE_PREINSTALL += "firmware-linux-nonfree firmware-realtek"
 
-IMAGE_INSTALL += "linux-image-${KERNEL_NAME}"
+IMAGE_INSTALL += "linux-image-${KERNEL_NAME}=5.19"
