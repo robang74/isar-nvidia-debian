@@ -1,4 +1,4 @@
-isar
-build
-.gitpasswd
-recipes-core/images/eval-image.bb
+/isar/
+/build/
+/.gitpasswd
+/recipes-core/images/eval-image.bb
