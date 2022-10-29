@@ -30,21 +30,22 @@ function print_current() {
 	show_current | sed -e "s,\(.*\),current: \\1 $vm,"
 }
 
+extra_space="83G"
+
 function is_vmdk_set() {
-	diff $fn $fl >/dev/null
+	grep -q "extra-space ${extra_space}" ${fn}
 }
 
 function set_vmdk_image() {
 	local vm nm="vmdk" f=$(basename ${fn})
 	[ "$1" != "$nm" ] && return 1
 	if  ! is_vmdk_set; then
-		if git status | grep -qw $f; then
+		if ! sed -i "s,extra-space 1G,extra-space ${extra_space}," ${fn}; then
 			echo
-			echo "ERROR: $f been modified, abort!"
+			echo "ERROR: cannot alter ${fn}, abort!"
 			echo
 			exit 1
 		fi
-		cat ${fl} >${fn}
 		echo
 		echo "NOTICE: $nm has been set"
 		return 0
@@ -57,15 +58,13 @@ function set_vmdk_image() {
 function set_norm_image() {
 	local vm nm="norm" f=$(basename ${fn})
 	[ "$1" != "$nm" ] && return 1
-	if ! is_vmdk_set; then
-		if git status | grep -qw $f; then
+	if is_vmdk_set; then
+		if ! sed -i "s,extra-space ${extra_space},extra-space 1G," ${fn}; then
 			echo
-			echo "ERROR: $f been modified, abort!"
+			echo "ERROR: cannot alter ${fn}, abort!"
 			echo
 			exit 1
 		fi
-	else
-		git checkout ${fn} >/dev/null
 		echo
 		echo "NOTICE: $nm has been set"
 		return 0

@@ -144,7 +144,7 @@ to lod the git functions and local scripts aliases
 
 Otherwise you can use this by command line:
 
-	./build.sh [ $BBTARGET | $IMAGE ] [ norm | vmdk ]
+	./build.sh [ norm | vmdk ] [ $BBTARGET | $IMAGE ]
 
 The Bitbake target could be any recipe.
 
