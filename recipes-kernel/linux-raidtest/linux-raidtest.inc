@@ -14,6 +14,7 @@ KBUILD_DEPENDS += " dwarves"
 KERNEL_DEFCONFIG = "defconfig-with-raid0-${PV}"
 
 SRC_URI += "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${PV}.tar.xz"
+SRC_URI += "file://0000-amd-ryzen-bios-handicap-fix.patch"
 SRC_URI += "file://${KERNEL_DEFCONFIG}"
 S = "${WORKDIR}/linux-${PV}"
 
