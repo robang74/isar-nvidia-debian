@@ -18,5 +18,6 @@ SRC_URI += "file://0000-amd-ryzen-bios-handicap-fix.patch"
 SRC_URI += "file://${KERNEL_DEFCONFIG}"
 S = "${WORKDIR}/linux-${PV}"
 
+SRC_URI += "file://custom/isar/install.tmpl"
 SRC_URI += "file://custom/control.tmpl"
 require ../custom-debian-dir.inc
