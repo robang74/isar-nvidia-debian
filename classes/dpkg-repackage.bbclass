@@ -18,8 +18,9 @@ SRC_URI = "apt://${PN}"
 
 do_binary_patch[cleandirs] += "${WORKDIR}/${PN}"
 do_binary_patch() {
+	set -x
 	test -n "${SED_REGEX}"
-	n=$(echo ${SRC_APT} | wc -w)
+	n=$(echo ${SRC_APT} ${SRC_URI} | wc -w)
 	test $n -eq 1 
 
 	d="${WORKDIR}/${PN}"
@@ -38,6 +39,7 @@ do_binary_patch() {
 }
 
 do_apt_fetch() {
+    set -x
     E="${@ isar_export_proxies(d)}"
     schroot_create_configs
 
@@ -48,10 +50,15 @@ do_apt_fetch() {
     trap 'schroot_cleanup' EXIT
 
     d="/downloads/deb/${DISTRO}"
-    for uri in "${SRC_APT}"; do
+    for uri in ${SRC_APT}; do
         schroot -d / -c ${SBUILD_CHROOT} -- \
             sh -c "mkdir -p ${d} && cd ${d} && apt download -y ${uri}"
     done
+    cd downloads
+    for uri in ${SRC_URI}; do
+	wget -c ${uri}
+    done
+    cd ..
     schroot_delete_configs
 }
 
