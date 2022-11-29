@@ -12,6 +12,13 @@ function vmdk_get_uuid() {
         dd if="$1" count=16 2>/dev/null | strings | sed -ne "s,ddb.uuid.image=\"\(.*\)\",\\1,p"
 }
 
+if [ "$1" == "" ]; then
+	echo
+	echo "USAGE: $(basename $0) [--nosync] [file:|pigz:|vmdk:]<destination>"
+	echo
+	exit 1
+fi
+
 cd $(dirname $0)
 
 for i in 1 2 3; do
@@ -59,14 +66,14 @@ echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
 
 if [ -n "$bdev" ]; then
 	if which bmaptool >/dev/null && test -f "$fimg.bmap"; then
-		time (sudo bmaptool copy $fimg $bdev; sync)
+		time (sudo bmaptool copy $fimg $bdev; sync $bdev)
 	else
 		echo
 		echo "WARNING: bmaptool allows to write on a block device much faster than dd"
 		echo
 		echo "         sudo apt install bmap-tools"
 		echo
-		time (sudo dd if="$fimg" bs=1M of=$bdev status=progress; sync)
+		time (sudo dd if="$fimg" bs=1M of=$bdev status=progress; sync $bdev)
 	fi
 elif [ -n "$file" ]; then 
 	time (cp -paf "$fimg" "$file"; sync "$file")
