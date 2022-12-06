@@ -152,7 +152,10 @@ cd - >/dev/null ###############################################################
 set_vmdk_image "$2" 
 set_norm_image "$2"
 
+err=0
 if [ ! -d isar/.git ]; then
         kcbuild --target isar-clone 2>&1 | grep -vi ERROR
+	err=$?
 fi
+test "$1" == "isar" && exit $?
 kcbuild ${1:+--target $1}

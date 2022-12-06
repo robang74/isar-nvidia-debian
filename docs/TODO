@@ -1,3 +1,2 @@
-- build clean just isar and suppress clean
 - dpkg-repackage.bbclass while collision to fix
 - lastStateChange="2022-10-08T19:40:52Z"

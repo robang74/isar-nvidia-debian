@@ -21,8 +21,10 @@ repos:
   isar-debx86:
 
   isar:
-    url: https://github.com/robang74/isar
-    refspec: 3849087ea7c6424b9c688518005c16ef83365528
+#   url: https://github.com/ilbers/isar.git
+#   refspec: a4de91e7debb49b47e502b70527a6a91fb8cb9fc
+    url: https://github.com/robang74/isar.git
+    refspec: 9f65762cf74b6e17056dab56f24baa5d76c6d63c
     layers:
       meta:
 
