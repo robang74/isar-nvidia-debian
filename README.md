@@ -192,9 +192,10 @@ or use this script
 
 With the script you can also transform your image in a VMDK file:
 
-    ./wicinst.sh vmdk:image.vmdk
+    ./wicinst.sh vmdk:image.vmdk 100
 
-this requires qemu-img installing the qemu-utils deb package
+this requires qemu-img installing the qemu-utils deb package and
+the last paramenter indicates the size in GB of the virtual disk
 
 
 Example

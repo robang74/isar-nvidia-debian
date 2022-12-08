@@ -15,19 +15,21 @@ function vmdk_get_uuid() {
 if [ "$1" == "" ]; then
 	echo
 	echo "USAGE: $(basename $0) [--nosync] [file:|pigz:|vmdk:]<destination>"
+	echo "       $(basename $0) [--nosync] vmdk:<destination> [size_in_gigabytes]"
 	echo
 	exit 1
 fi
 
 cd $(dirname $0)
 
-for i in 1 2 3; do
+declare -i sizeinc=0
+while [ "$1" != "" ]; do
 	if [ -b "$1" ]; then
 		bdev="$1"
 	elif echo "$1" | grep -qe "^file:"; then
 		file="${1/file:/}"
 	elif echo "$1" | grep -qe "^pigz:"; then
-		pigz="${1/pigz:/}"
+		pigz="${1/pigz:/}"a
 	elif echo "$1" | grep -qe "^vmdk:"; then
 		vmdk="${1/vmdk:/}"
 	elif [ -e "$1" ]; then
@@ -35,6 +37,8 @@ for i in 1 2 3; do
 	elif [ "x$1" == "x--nosync" ]; then
 		sync() { echo "OPTION: no sync"; }
 		export -f sync
+	else 
+		sizeinc=$[($1*1024*1024*1024)-1]
 	fi
 	shift
 done
@@ -59,8 +63,8 @@ if [ ! -e "$fimg" ]; then
 	exit 1
 fi
 
-size=$(du -b "$fimg" | cut -f1)
-szmb=$(du -m "$fimg" | cut -f1)
+declare -i size=$(du -b "$fimg" | cut -f1)
+declare -i szmb=$(du -m "$fimg" | cut -f1)
 echo
 echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
 
@@ -80,6 +84,14 @@ elif [ -n "$file" ]; then
 elif [ -n "$pigz" ]; then
 	time (pigz -c "$fimg" | dd bs=1M status=progress >"$pigz"; sync "$pigz")
 elif [ -n "$vmdk" ]; then
+	declare -i quit=0
+	if [ $sizeinc -gt $[szmb*1024] ]; then
+		echo -n "Enlarging wic image from $szmb Mb to "
+		dd if=/dev/zero bs=1 seek=$sizeinc count=1 oflag=append conv=notrunc,sparse status=none of=$fimg
+		csize=$(du -b $fimg | cut -f1)
+		csize=$[(csize+512)/1024]
+		echo "$[(csize+512)/1024] Mb"
+	fi
 	if ! which qemu-img >/dev/null; then
 		echo
 		echo "WARNING: qemu-utils is missing, press a ENTER to install"
@@ -102,7 +114,11 @@ elif [ -n "$vmdk" ]; then
 		echo
 		echo "ERROR: no VBoxManage nor qemu-img are available, abort!"
 		echo
-		exit 1
+		quit=1
 	fi
+	if [ $sizeinc -gt 0 ]; then
+		truncate -s $size $fimg
+	fi
+	test "$quit" != "0" && exit $quit
 fi
 echo
