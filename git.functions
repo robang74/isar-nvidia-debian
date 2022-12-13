@@ -177,3 +177,8 @@ function pull() {
 	git pull "$@"
 }
 export -f pull
+
+function fpatch() {
+	git format-patch -1 "$@"
+}
+export -f fpatch
