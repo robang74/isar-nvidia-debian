@@ -87,6 +87,7 @@ elif [ -n "$vmdk" ]; then
 	declare -i quit=0
 	if [ $sizeinc -gt $[szmb*1024] ]; then
 		echo -n "Enlarging wic image from $szmb Mb to "
+		trap "truncate -s $size $fimg" EXIT
 		dd if=/dev/zero bs=1 seek=$sizeinc count=1 oflag=append conv=notrunc,sparse status=none of=$fimg
 		csize=$(du -b $fimg | cut -f1)
 		csize=$[(csize+512)/1024]
@@ -114,11 +115,7 @@ elif [ -n "$vmdk" ]; then
 		echo
 		echo "ERROR: no VBoxManage nor qemu-img are available, abort!"
 		echo
-		quit=1
+		exit 1
 	fi
-	if [ $sizeinc -gt 0 ]; then
-		truncate -s $size $fimg
-	fi
-	test "$quit" != "0" && exit $quit
 fi
 echo
