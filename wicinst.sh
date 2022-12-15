@@ -14,8 +14,7 @@ function vmdk_get_uuid() {
 
 if [ "$1" == "" ]; then
 	echo
-	echo "USAGE: $(basename $0) [--nosync] [file:|pigz:|vmdk:]<destination>"
-	echo "       $(basename $0) [--nosync] vmdk:<destination> [size_in_gigabytes]"
+	echo "USAGE: $(basename $0) [--nosync] [file:|pigz:|vmdk:]<destination> [size_in_gigabytes]"
 	echo
 	exit 1
 fi
@@ -68,6 +67,15 @@ declare -i szmb=$(du -m "$fimg" | cut -f1)
 echo
 echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
 
+if [ $sizeinc -gt $[szmb*1024] ]; then
+	echo -n "Enlarging wic image from $szmb Mb to "
+	trap "truncate -s $size $fimg" EXIT
+	dd if=/dev/zero bs=1 seek=$sizeinc count=1 oflag=append conv=notrunc,sparse status=none of=$fimg
+	csize=$(du -b $fimg | cut -f1)
+	csize=$[(csize+512)/1024]
+	echo "$[(csize+512)/1024] Mb"
+fi
+
 if [ -n "$bdev" ]; then
 	if which bmaptool >/dev/null && test -f "$fimg.bmap"; then
 		time (sudo bmaptool copy $fimg $bdev; sync $bdev)
@@ -84,15 +92,6 @@ elif [ -n "$file" ]; then
 elif [ -n "$pigz" ]; then
 	time (pigz -c "$fimg" | dd bs=1M status=progress >"$pigz"; sync "$pigz")
 elif [ -n "$vmdk" ]; then
-	declare -i quit=0
-	if [ $sizeinc -gt $[szmb*1024] ]; then
-		echo -n "Enlarging wic image from $szmb Mb to "
-		trap "truncate -s $size $fimg" EXIT
-		dd if=/dev/zero bs=1 seek=$sizeinc count=1 oflag=append conv=notrunc,sparse status=none of=$fimg
-		csize=$(du -b $fimg | cut -f1)
-		csize=$[(csize+512)/1024]
-		echo "$[(csize+512)/1024] Mb"
-	fi
 	if ! which qemu-img >/dev/null; then
 		echo
 		echo "WARNING: qemu-utils is missing, press a ENTER to install"
@@ -102,6 +101,7 @@ elif [ -n "$vmdk" ]; then
 	fi
 	uuid=$(fdisk -l "$fimg" | sed -ne "s,Disk identifier: \(.*\),\\1,p" | tr [A-Z] [a-z])
 	echo "UUID read: $uuid"
+	echo "$uuid" | grep -q "^........-....-....-....-............$" || uuid=""
 	if which VBoxManage >/dev/null; then
 		uuid=${uuid:-$(cat /proc/sys/kernel/random/uuid)}
 		echo "UUID used: $uuid"
