@@ -23,15 +23,19 @@ function getloopdev() {
 	local a
 	a=$(losetup -j $fimg | cut -d: -f1)
 	a=$(ls -1v "$a" 2>/dev/null | tail -n1)
-	a=${a:+${a}p2}
-	test -b "$a" && echo $a
+	d=${a:+${a}p2}
+	test -b "$d" && echo $d && return 0
+	d=${a:+${a}p1}
+	test -b "$d" && echo $d && return 0
+	d=$a
+	test -b "$d" && echo $d && return 0
 }
 
 function umountall() {
         set +e
         umount -R $rootdir
         if getloopdev >/dev/null; then 
-		losetup -d ${bdev/p2/}
+		losetup -d ${bdev/p[12]/}
 		getloopdev | sed -e "s,\(.*\),ERROR: loop device \\1 is still busy!,"
 	fi
 	echo
