@@ -25,6 +25,6 @@ do_custom_debian_dir() {
 
 addtask custom_debian_dir after do_unpack before do_transform_template
 
-do_prepare_build_prepend() {
+do_prepare_build:prepend() {
 	rm -rf ${S}/debian
 }

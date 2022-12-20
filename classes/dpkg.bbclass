@@ -8,7 +8,7 @@ PACKAGE_ARCH ?= "${DISTRO_ARCH}"
 
 DPKG_PREBUILD_ENV_FILE="${WORKDIR}/dpkg_prebuild.env"
 
-do_prepare_build_append() {
+do_prepare_build:append() {
     env > ${DPKG_PREBUILD_ENV_FILE}
 }
 
