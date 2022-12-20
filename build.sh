@@ -122,19 +122,24 @@ if [ "$1" == "" -a ! -e eval-image.bb ]; then
 	echo
 	exit 1
 elif [ "$doimg" == "1" ]; then
-	echo
-	print_current
-	echo
-	if [ -e "$1" -a -e "$topdir/build" ]; then
+	if [ -e "$1" ]; then
+#	if [ -e "$1" -a -e "$topdir/build" ]; then
+		echo
+		print_current
+		echo
 		if [ "$1" == "eval-image-$(show_current).bb" ]; then
 			true
 		elif ! ln -s $1 eval-image.bb 2>/dev/null; then
-			true
 			echo -n "A target exists, clean isar? (y/N) "
 			read key && echo
 			ln -sf $1 eval-image.bb
 			[ "$key" == "y" ] && ${topdir}/clean.sh isar
 		fi
+	else
+		ln -s $1 eval-image.bb 2>/dev/null
+		echo
+		print_current
+		echo
 	fi
 	set --
 elif [ "$1" != "" ]; then
