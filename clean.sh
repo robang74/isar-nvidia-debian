@@ -19,7 +19,7 @@ function print_help() {
 cd $(dirname $0)
 
 case $1 in
-	all) sudo rm -rf $(ls -1d build/* | grep -v downloads)
+	all) sudo rm -rf $(ls -1d build/* 2>/dev/null | grep -ev "^build/downloads")
 		;;	
 	kas) sudo ./kas-container clean
 		;;
