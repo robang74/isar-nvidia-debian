@@ -6,6 +6,12 @@ nVidia GPU support (515.65.07) up to a graphic developing environment with the
 full nVidia software stack (11.7.1) running a standard debian kernel
 
 
+Support
+-------
+
+This project is mainteind by Roberto A. Foglietta <roberto.foglietta@gmail.com>
+
+
 About
 -----
 
@@ -93,7 +99,7 @@ that unlock AMD Ryzen CPUs a more +51% of computation power lost due to an old b
 Virtual disk 'build me' download
 --------------------------------
 
-This Microsoft OneDrive link works with a WWW browser only:
+This Microsoft OneDrive link works with a web browser only:
 
 - https://1drv.ms/u/s!ArH4FO-H0IhyglZou3fYJQJWngff
 
@@ -112,7 +118,7 @@ activate the EUFI boot (Settings, System, Enable EFI (special OSes only).
 
 The virtual machine is accessible also by SSH using every client:
 
-- ssh -p2022 -o StrictHostKeyChecking=no root@localhost (password root)
+	ssh -p2022 -o StrictHostKeyChecking=no root@localhost (password root)
 
 The first action to do is to change the passwords for users: root and debraf
 
@@ -144,7 +150,7 @@ to lod the git functions and local scripts aliases
 
 Otherwise you can use this by command line:
 
-	./build.sh [ norm | vmdk ] [ $BBTARGET | $IMAGE ]
+	./build.sh [ $BBTARGET | $IMAGE ]
 
 The Bitbake target could be any recipe.
 
@@ -170,29 +176,37 @@ Then you can clean the ISAR project with command
 
 	./clean.sh isar
 
+or to clean quite everything in build but not downloads, this command
+
+	./clean.sh all
+
+the build/downloads folder is precious because it takes time to download again
+
 
 Installing
 ----------
 
 You can find the image with this command
 
-    imgfile=$(find build/ -name eval-image-\*.wic 2>/dev/null)
+	imgfile=$(find build/ -name eval-image-\*.wic 2>/dev/null)
 
 and install it with one of these two
 
-    sudo dd if=${imgfile} of=/dev/${USBDISK} bs=1M status=progress
+	sudo dd if=${imgfile} of=/dev/${USBDISK} bs=1M status=progress
 
 or, if bmap-tools are installed,
 
-    sudo bmaptool copy ${imgfile} /dev/${USBDISK}
+	sudo bmaptool copy ${imgfile} /dev/${USBDISK}
 
-or use this script
+on some system bmaptool fails to work, then simply deinstall it
 
-    sudo ./wicinst.sh /dev/${USBDISK}
+The best way is to use this script
+
+	sudo ./wicinst.sh /dev/${USBDISK}
 
 With the script you can also transform your image in a VMDK file:
 
-    ./wicinst.sh vmdk:image.vmdk 100
+	./wicinst.sh vmdk:image.vmdk [$disk_size_in_gigabytes]
 
 this requires qemu-img installing the qemu-utils deb package and
 the last paramenter indicates the size in GB of the virtual disk
@@ -203,15 +217,20 @@ Example
 
 For example to create the 'build me' vmdk 110 GiB image:
 
-	./clean.sh isar
-	./build.sh build-me vmdk
-	./wicinst vmdk:image-buildme-vm.vmdk
+	source .profile
+	clean all
+	build.sh build-me
+	wicinst vmdk:image-buildme-vm.vmdk 110
 
 then in docs/vm there is the template to create the OVA package
 
-	./makeova.sh
+	makeova [$filename].ova [$disk_size_in_gigabyte] 
 
-do the magic to create the OVA archive in the top folder
+do the magic to create the OVA archive in the top folder or this
+
+	wicinst ovaf:image-buildme-vm.ova 110	
+
+which do the same using `makeova.sh` but with `wicinst` syntax
 
 
 License
@@ -233,7 +252,13 @@ rights, obviously. So, it should not need to complain with the GPLv3 license
 applied to the composition. Unless, the composition is adopted for the part
 which had not the rights, before.
 
-For further information or requests, please write at the repository maintainer:
+Moreover, this project is a layer of a customised ISAR engine as defined in
+the `kas.yml`. Some files of that project will transfered into the image thus
+their license also matters. Please also check the `README.md` of this
+
+- https://github.com/robang74/isar#license
+
+For further information or requests, please write to the project maintainer:
 
 - Roberto A. Foglietta <roberto.foglietta@gmail.com>
 
