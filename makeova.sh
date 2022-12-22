@@ -33,23 +33,26 @@ set -e
 cd $(dirname "$0")
 topdir="$PWD"
 d="$topdir/docs/vm/tmp"
+trap "rm -rf '$d'" EXIT
 
 declare -i szgb=$1 2>/dev/null
-if [ "${szgb%0}" == "" ]; then
-	szgb=100
-else
-	shift
-fi
+test "${szgb%0}" != "" && shift
 fimg=${1:-eval-$(show_current | tr -d '-')-vm}
+fimg=${fimg%\.ova}
 
 if [ -e "$topdir/$fimg.ova" -o -e "$topdir/$fimg.ova.7z" ]; then
 	echo
 	echo "ERROR: $topdir/$fimg.ova(.7z) exist, abort!"
 	echo
 	exit 1
+elif ! which sha1sum >/dev/null; then
+	echo
+	echo "ERROR: command sha1sum is not available, abort!"
+	echo
+	exit 2
 fi
 
-VM_VERSION_INFO="$(git -C ${topdir} describe --tags --dirty --match 'v[0-9].[0-9]*')"
+VM_VERSION_INFO="$(git -C ${topdir} describe --tags --dirty --match 'v[0-9].[0-9]*' --all || echo unknown)"
 VM_PRODUCT_INFO="ISAR nVidia Debian evaluation virtual machine"
 VM_PRODUCT_URL="https://github.com/robang74/isar-nvidia-debian"
 VM_VENDOR_INFO="$(get_field_value "user.name")"

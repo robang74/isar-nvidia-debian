@@ -20,6 +20,7 @@ if [ "$1" == "" ]; then
 fi
 
 cd $(dirname $0)
+topdir=$PWD
 
 declare -i sizeinc=0
 while [ "$1" != "" ]; do
@@ -31,6 +32,8 @@ while [ "$1" != "" ]; do
 		pigz="${1/pigz:/}"a
 	elif echo "$1" | grep -qe "^vmdk:"; then
 		vmdk="${1/vmdk:/}"
+	elif echo "$1" | grep -qe "^ovaf:"; then
+		ovaf="${1/ovaf:/}"
 	elif [ -e "$1" ]; then
 		fimg="$1"
 	elif [ "x$1" == "x--nosync" ]; then
@@ -65,7 +68,7 @@ fi
 declare -i size=$(du -b "$fimg" | cut -f1)
 declare -i szmb=$(du -m "$fimg" | cut -f1)
 echo
-echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk} ..."
+echo "Transfering ${szmb}Mb: $fimg => ${bdev}${file}${pigz}${vmdk}${ovaf} ..."
 
 if [ $sizeinc -gt $[szmb*1024] ]; then
 	echo -n "Enlarging wic image from $szmb Mb to "
@@ -117,5 +120,7 @@ elif [ -n "$vmdk" ]; then
 		echo
 		exit 1
 	fi
+elif [ -n "$ovaf" ]; then
+	$topdir/makeova.sh "$ovaf"
 fi
 echo
