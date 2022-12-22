@@ -33,7 +33,14 @@ set -e
 cd $(dirname "$0")
 topdir="$PWD"
 d="$topdir/docs/vm/tmp"
-fimg="eval-$(show_current | tr -d '-')-vm"
+
+declare -i szgb=$1 2>/dev/null
+if [ "${szgb%0}" == "" ]; then
+	szgb=100
+else
+	shift
+fi
+fimg=${1:-eval-$(show_current | tr -d '-')-vm}
 
 if [ -e "$topdir/$fimg.ova" -o -e "$topdir/$fimg.ova.7z" ]; then
 	echo
@@ -65,7 +72,7 @@ disk="$d/$fimg-disk001.vmdk"
 echo "Open Virtual Format 1.0 written in $d/$fimg.ovf"
 echo "Copying the VMDK image in $disk ..."
 
-$topdir/wicinst.sh vmdk:"$disk" --nosync
+$topdir/wicinst.sh vmdk:"$disk" --nosync $szgb
 
 echo -n "Retriving the SIZE and the UUID of the new VMDK image ..."
 VM_IMAGE_UUID=$(vmdk_get_uuid "$d/$disk")
@@ -99,7 +106,6 @@ echo "OVF 1.0 manifest written in $d/$fimg.mf"
 echo -n "Creating the OVA archive ... " 
 cd $d
 tar cf $topdir/$fimg.ova *  
-#sync $topdir/$fimg.ova
 echo " OK"
 echo "Open Virtual Appliance created in $topdir/$fimg.ova"
 rm -rf "$d"
@@ -107,7 +113,6 @@ cd $topdir
 echo && exit
 
 echo "Compressing OVA archiver with 7z ..."
-#7z a -mx9 -sdel $fimg.ova.7z $fimg.ova
 7z a -mx9 $fimg.ova.7z $fimg.ova
 echo "Compressed OVA archive written in $topdir/$fimg.ova.7z"
 echo
