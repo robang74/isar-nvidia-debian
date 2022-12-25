@@ -12,4 +12,6 @@ require eval-image-basic-os.bb
 
 DESCRIPTION = "${DESCHEAD} basic + docker"
 
-IMAGE_PREINSTALL += "docker-ce git qemu-utils"
+IMAGE_PREINSTALL += "docker-ce git qemu-utils qemu-user-static reprepro quilt \
+	zstd debootstrap virtualenv umoci skopeo \
+"
