@@ -27,7 +27,7 @@ function show_current() {
 function print_current() {
 	local vm
 	is_vmdk_set && vm="(vmdk)"
-	show_current | sed -e "s,\(.*\),current: \\1 $vm,"
+	show_current | sed -e "s,\(.*\),${1:-current}: \\1 $vm,"
 }
 
 extra_space="83G"
@@ -130,9 +130,11 @@ elif [ "$doimg" == "1" ]; then
 		if [ "$1" == "eval-image-$(show_current).bb" ]; then
 			true
 		elif ! ln -s $1 eval-image.bb 2>/dev/null; then
+			ln -sf $1 eval-image.bb
+			print_current updated
+			echo
 			echo -n "A target exists, clean isar? (y/N) "
 			read key && echo
-			ln -sf $1 eval-image.bb
 			[ "$key" == "y" ] && ${topdir}/clean.sh isar
 		fi
 	else
