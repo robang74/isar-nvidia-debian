@@ -7,9 +7,6 @@
 #
 
 function getloopdev() {
-#	ls -1v $(losetup -lan | grep $fimg | cut -d' ' -f1) | tail -n1
-#	ls -1v "$(losetup -j $fimg | cut -d: -f1)" 2>/dev/null | tail -n1 | egrep .
-
 	if [ -b "$fimg" ]; then
 		if [ -b ${fimg}2 ]; then
 			echo ${fimg}2 
@@ -33,7 +30,7 @@ function getloopdev() {
 
 function umountall() {
         set +e
-        umount -R $rootdir
+        umount -R ${1:-$rootdir}
         if getloopdev >/dev/null; then 
 		losetup -d ${bdev/p[12]/}
 		getloopdev | sed -e "s,\(.*\),ERROR: loop device \\1 is still busy!,"
@@ -57,7 +54,22 @@ function jumpinto() {
 	mount -t cgroup2 cgroup2 $rootdir/sys/fs/cgroup
 	echo "chroot into $(basename $fimg)..."
 	echo
-	chroot $rootdir su -l root -Ps /bin/bash
+
+	export debian_chroot=chroot
+	hostname=$(cat $rootdir/etc/hostname)
+	hostname=${hostname:-unknown}
+	sed -i "s,\(127.0.0.1.*localhost$\),\\1 $hostname $HOSTNAME," $rootdir/etc/hosts
+	export HOSTNAME=$hostname
+	if true; then echo '
+hostname -F /etc/hostname
+export HOSTNAME=$(hostname -s)
+source /etc/profile
+alias exp-last-part=/usr/share/expand-on-first-boot/expand-last-partition.sh
+echo $debian_chroot hostname: $(hostname -s), current user: $(whoami)
+echo; cd'
+	fi > $rootdir/root/.chrootrc
+	chroot $rootdir /bin/bash --rcfile /root/.chrootrc -i
+
 	echo "chroot exiting..."
 }
 
@@ -96,7 +108,7 @@ fi
 
 rootdir=build/root
 bdev="$(getloopdev)"
-trap "umountall" EXIT
+trap "umountall $(readlink -f $rootdir)" EXIT
 set -e
 echo
 if [ -b "$fimg" ]; then
