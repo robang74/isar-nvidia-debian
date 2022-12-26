@@ -68,7 +68,7 @@ alias exp-last-part=/usr/share/expand-on-first-boot/expand-last-partition.sh
 echo $debian_chroot hostname: $(hostname -s), current user: $(whoami)
 echo; cd'
 	fi > $rootdir/root/.chrootrc
-	chroot $rootdir /bin/bash --rcfile /root/.chrootrc -i
+	chroot $rootdir /bin/bash --rcfile /root/.chrootrc -ic bash
 
 	echo "chroot exiting..."
 }
