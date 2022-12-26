@@ -24,7 +24,7 @@ repos:
 #   url: https://github.com/ilbers/isar.git
 #   refspec: a4de91e7debb49b47e502b70527a6a91fb8cb9fc
     url: https://github.com/robang74/isar.git
-    refspec: a37cb674556f2baab4daef167f82f10cb5973190
+    refspec: 32fc79f839a4ed192fd9308b5ef77daf4bc89125
     layers:
       meta:
 
