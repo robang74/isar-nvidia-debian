@@ -88,6 +88,15 @@ topdir=$PWD
 fn="$topdir/wic/debx86.wks"
 fl="$topdir/wic/debx86-110GiB-vmdk.wks"
 
+for i in pigz pzstd; do
+	if ! which $i >/dev/null; then
+		echo
+		echo "ERROR: the command '$i' is missing, install it"
+		echo
+		exit 1
+	fi
+done
+
 set_vmdk_image "$1" && shift
 set_norm_image "$1" && shift
 
