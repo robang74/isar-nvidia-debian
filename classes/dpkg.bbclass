@@ -92,11 +92,11 @@ dpkg_runbuild() {
         --host=${PACKAGE_ARCH} --build=${SBUILD_HOST_ARCH} ${profiles} \
         --no-run-lintian --no-run-piuparts --no-run-autopkgtest --resolve-alternatives \
         --chroot-setup-commands="ldconfig; rm -f /var/log/dpkg.log" \
-        --chroot-setup-commands="cp -n --no-preserve=owner ${ext_deb_dir}/*.deb -t ${deb_dir}/ || :" \
+        --chroot-setup-commands="ln -Pf ${ext_deb_dir}/*.deb -t ${deb_dir}/ 2>/dev/null || :" \
         --chroot-setup-commands="cp -paf /bin/chmod /bin/s.chmod && chmod +s /bin/s.chmod" \
         --finished-build-commands="rm -f ${deb_dir}/sbuild-build-depends-main-dummy_*.deb" \
-        --finished-build-commands="cp -n --no-preserve=owner ${deb_dir}/*.deb -t ${ext_deb_dir}/ || :" \
-        --finished-build-commands="cp /var/log/dpkg.log ${ext_root}/dpkg_partial.log" \
+        --finished-build-commands="ln -P ${deb_dir}/*.deb -t ${ext_deb_dir}/ 2>/dev/null || :" \
+        --finished-build-commands="cp -f /var/log/dpkg.log ${ext_root}/dpkg_partial.log" \
         --debbuildopts="--source-option=-I" \
         --build-dir=${WORKDIR} --dist="isar" ${DSC_FILE}
 
