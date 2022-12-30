@@ -60,10 +60,10 @@ function jumpinto() {
 	hostname=${hostname:-unknown}
 	sed -i "s,\(127.0.0.1.*localhost$\),\\1 $hostname $HOSTNAME," $rootdir/etc/hosts
 	export HOSTNAME=$hostname
-	if true; then echo '
+	if true; then echo '#!/usr/bin/env
 hostname -F /etc/hostname
 export HOSTNAME=$(hostname -s)
-source /etc/profile
+source /etc/profile; source /etc/locale; export LC_ALL
 alias exp-last-part=/usr/share/expand-on-first-boot/expand-last-partition.sh
 echo $debian_chroot hostname: $(hostname -s), current user: $(whoami)
 echo; cd'
