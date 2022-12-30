@@ -12,6 +12,6 @@ require eval-image-basic-os.bb
 
 DESCRIPTION = "${DESCHEAD} basic development"
 
-IMAGE_PREINSTALL += "gcc build-essential \
-	automake autoconf pkgconf git \
+IMAGE_PREINSTALL += "gcc build-essential man-db \
+	automake autoconf pkgconf git manpages \
 "

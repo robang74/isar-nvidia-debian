@@ -10,3 +10,5 @@
 
 require eval-image-basic-os.bb
 require eval-image-nvdocker.inc
+
+IMAGE_PREINSTALL += "manpages man-db"
