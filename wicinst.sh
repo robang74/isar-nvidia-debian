@@ -28,14 +28,18 @@ while [ "$1" != "" ]; do
 		bdev="$1"
 	elif echo "$1" | grep -qe "^file:"; then
 		file="${1/file:/}"
+		file=$(readlink -f "${file/#\~/$HOME}")
 	elif echo "$1" | grep -qe "^pigz:"; then
 		pigz="${1/pigz:/}"a
+		pigz=$(readlink -f "${pigz/#\~/$HOME}")
 	elif echo "$1" | grep -qe "^vmdk:"; then
 		vmdk="${1/vmdk:/}"
+		vmdk=$(readlink -f "${vmdk/#\~/$HOME}")
 	elif echo "$1" | grep -qe "^ovaf:"; then
 		ovaf="${1/ovaf:/}"
+		ovaf=$(readlink -f "${ovaf/#\~/$HOME}")
 	elif [ -e "$1" ]; then
-		fimg="$1"
+		fimg=$(readlink -f "${fimg/#\~/$HOME}")
 	elif [ "x$1" == "x--nosync" ]; then
 		sync() { echo "OPTION: no sync"; }
 		export -f sync
