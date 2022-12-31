@@ -62,8 +62,9 @@ function jumpinto() {
 	export HOSTNAME=$hostname
 	if true; then echo '#!/usr/bin/env
 hostname -F /etc/hostname
-export HOSTNAME=$(hostname -s)
+export HOSTNAME=$(hostname -s); export HOME=/root
 source /etc/profile; source /etc/locale; export LC_ALL
+'$(env | grep _proxy= | sed -e "s,\(.*\),export \\1;,")'
 alias exp-last-part=/usr/share/expand-on-first-boot/expand-last-partition.sh
 echo $debian_chroot hostname: $(hostname -s), current user: $(whoami)
 echo; cd'
@@ -76,7 +77,7 @@ echo; cd'
 if [ "$(whoami)" != "root" ]; then
         echo
         echo "WARNING: this script should run as root, sudo!"
-	sudo $0 "$@"
+	sudo -E $0 "$@"
         exit $?
 fi
 
