@@ -47,7 +47,7 @@ Rationale
 
 An equivalent result can be obtained installing a Debian 11, adding the nVidia
 repositories dedicated to the developers and the other one dedicated to the
-docker runtime, then installing the 'cuda-demo-suite-11-7' and 'nvidia-docker2'
+docker runtime, then installing the `cuda-demo-suite-11-7` and `nvidia-docker2`
 packages.
 
 The most sensitive difference between these two approaches is that the ISAR
@@ -96,7 +96,7 @@ that unlock AMD Ryzen CPUs a more +51% of computation power lost due to an old b
 - debian legal ml https://lists.debian.org/debian-legal/2022/10/msg00004.html
 
 
-Virtual disk 'build me' download
+Virtual disk `build me` download
 --------------------------------
 
 This Microsoft OneDrive link works with a web browser only:
@@ -122,7 +122,7 @@ The virtual machine is accessible also by SSH using every client:
 
 The first action to do is to change the passwords for users: root and debraf
 
-The first time to access the local apt cache 'sudo apt update" is needed
+The first time to access the local apt cache `sudo apt update` is needed
 
 
 Dependencies
@@ -144,7 +144,7 @@ You can load the repository shell profile in this way:
 
 	source .profile
 
-to lod the git functions and local scripts aliases
+to laod the git functions and local scripts aliases
 
 	build, clean, wicinst, wicshell, wicqemu
 
@@ -215,22 +215,60 @@ the last paramenter indicates the size in GB of the virtual disk
 Example
 -------
 
-For example to create the 'build me' vmdk 110 GiB image:
+For example to create the `build me` vmdk 100 GiB image:
 
 	source .profile
 	clean all
 	build.sh build-me
-	wicinst vmdk:image-buildme-vm.vmdk 110
+	wicinst vmdk:image-buildme-vm.vmdk 100
 
-then in docs/vm there is the template to create the OVA package
+then in `docs/vm` there is the template to create the OVA package
 
 	makeova [$filename].ova [$disk_size_in_gigabyte] 
 
 do the magic to create the OVA archive in the top folder or this
 
-	wicinst ovaf:image-buildme-vm.ova 110	
+	wicinst ovaf:image-buildme-vm.ova 100
 
 which do the same using `makeova.sh` but with `wicinst` syntax
+
+
+Proxy configure
+---------------
+
+	sudo -s
+	apt update && apt install squid
+	sed -i "s,^\(acl localnet src .*\),#\\1," /etc/squid/squid.conf
+
+	cat >/etc/profile.d/squid_proxy_vars.sh <<EOF
+	export no_proxy=localhost,$(hostname -s),127.0.0.0/8,::1
+	export ftp_proxy=http://127.0.0.1:3128/
+	export https_proxy=http://127.0.0.1:3128/
+	export http_proxy=http://127.0.0.1:3128/
+	EOF
+	source /etc/profile.d/squid_proxy_vars.sh
+
+	mkdir -p /etc/systemd/system/docker.service.d
+	ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
+	cat >/etc/systemd/system/docker.service.d/http-proxy.conf <<EOF
+	[Service]
+	Environment="HTTP_PROXY=${http_proxy/127.0.0.1/$ipaddr}"
+	Environment="HTTPS_PROXY=${https_proxy/127.0.0.1/$ipaddr}"
+	Environment="NO_PROXY=$no_proxy"
+	Environment="http_proxy=${http_proxy/127.0.0.1/$ipaddr}"
+	Environment="https_proxy=${https_proxy/127.0.0.1/$ipaddr}"
+	Environment="no_proxy=$not_proxy"
+	EOF
+
+	cat >/etc/squid/conf.d/docker.conf <<EOF
+	acl dockernet src 192.168.0.0/16
+	acl dockernet src 172.0.0.0/8
+	http_access allow dockernet
+	EOF
+
+	systemctl daemon-reload
+	systemctl reload squid
+	systemctl restart docker
 
 
 License
