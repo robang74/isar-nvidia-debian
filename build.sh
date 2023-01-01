@@ -8,11 +8,8 @@
 # SPDX-License-Identifier: MIT
 #
 
-function kcbuild() {
-        cd $(dirname $0)
-        time ./kas-container build kas.yml "$@"
-        echo
-}
+kasyml="kas.yml"
+#kasopt="--no-proxy-from-env"
 
 function print_images() {
 	sed -e "s,^eval-image-\(.*\).bb,  - \\1," README.txt
@@ -168,10 +165,13 @@ cd - >/dev/null ###############################################################
 set_vmdk_image "$2" 
 set_norm_image "$2"
 
-err=0
+ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
+for i in $(env | grep -e "_proxy="); do
+	export ${i/127.0.0.1/$ipaddr}
+done
+
+cd $topdir
 if [ ! -d isar/.git ]; then
-        kcbuild --target isar-clone 2>&1 | grep -vi ERROR
-	err=$?
+	time ./kas-container $kasopt checkout "$kasyml" || exit $?
 fi
-test "$1" == "isar" && exit $?
-kcbuild ${1:+--target $1}
+time ./kas-container $kasopt build ${1:+--target $1} "$kasyml"
