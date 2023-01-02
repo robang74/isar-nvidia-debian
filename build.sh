@@ -23,52 +23,7 @@ function show_current() {
 
 function print_current() {
 	local vm
-	is_vmdk_set && vm="(vmdk)"
 	show_current | sed -e "s,\(.*\),${1:-current}: \\1 $vm,"
-}
-
-extra_space="83G"
-
-function is_vmdk_set() {
-	grep -q "extra-space ${extra_space}" ${fn}
-}
-
-function set_vmdk_image() {
-	local vm nm="vmdk" f=$(basename ${fn})
-	[ "$1" != "$nm" ] && return 1
-	if  ! is_vmdk_set; then
-		if ! sed -i "s,extra-space 1G,extra-space ${extra_space}," ${fn}; then
-			echo
-			echo "ERROR: cannot alter ${fn}, abort!"
-			echo
-			exit 1
-		fi
-		echo
-		echo "NOTICE: $nm has been set"
-		return 0
-	fi
-	echo
-	echo "NOTICE: $nm currently set"
-	return 0
-}
-
-function set_norm_image() {
-	local vm nm="norm" f=$(basename ${fn})
-	[ "$1" != "$nm" ] && return 1
-	if is_vmdk_set; then
-		if ! sed -i "s,extra-space ${extra_space},extra-space 1G," ${fn}; then
-			echo
-			echo "ERROR: cannot alter ${fn}, abort!"
-			echo
-			exit 1
-		fi
-		echo
-		echo "NOTICE: $nm has been set"
-		return 0
-	fi
-	echo
-	echo "NOTICE: $nm currently set"
-	return 0
 }
 
 if [ "$(whoami)" == "root" ]; then
@@ -93,9 +48,6 @@ for i in pigz pzstd; do
 		exit 1
 	fi
 done
-
-set_vmdk_image "$1" && shift
-set_norm_image "$1" && shift
 
 cd recipes-core/images ########################################################
 
@@ -130,13 +82,19 @@ if [ "$1" == "" -a ! -e eval-image.bb ]; then
 elif [ "$doimg" == "1" ]; then
 	if [ -e "$1" ]; then
 #	if [ -e "$1" -a -e "$topdir/build" ]; then
-		echo
-		print_current
-		echo
+		if [ "$(show_current)" != "" ]; then
+			echo
+			print_current
+			echo
+		fi
 		if [ "$1" == "eval-image-$(show_current).bb" ]; then
 			true
-		elif ! ln -s $1 eval-image.bb 2>/dev/null; then
-			ln -sf $1 eval-image.bb
+		elif ln -s "$1" eval-image.bb 2>/dev/null; then
+			echo
+			print_current setanew
+			echo
+		else
+			ln -sf "$1" eval-image.bb
 			print_current updated
 			echo
 			echo -n "A target exists, clean isar? (y/N) "
@@ -144,7 +102,7 @@ elif [ "$doimg" == "1" ]; then
 			[ "$key" == "y" ] && ${topdir}/clean.sh isar
 		fi
 	else
-		ln -s $1 eval-image.bb 2>/dev/null
+		ln -sf "$1" eval-image.bb
 		echo
 		print_current
 		echo
@@ -162,16 +120,15 @@ fi
 
 cd - >/dev/null ###############################################################
 
-set_vmdk_image "$2" 
-set_norm_image "$2"
-
 ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}
 done
+env | grep _proxy= && echo || unset no_proxy ftp_proxy https_proxy http_proxy
 
 cd $topdir
 if [ ! -d isar/.git ]; then
 	time ./kas-container $kasopt checkout "$kasyml" || exit $?
+	echo
 fi
 time ./kas-container $kasopt build ${1:+--target $1} "$kasyml"
