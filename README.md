@@ -237,7 +237,7 @@ Proxy configure
 ---------------
 
 	sudo -s
-	apt update && apt install squid
+	apt update && apt install -y squid squid-purge squidview ufw
 	sed -i "s,^\(acl localnet src .*\),#\\1," /etc/squid/squid.conf
 
 	cat >/etc/profile.d/squid_proxy_vars.sh <<EOF
@@ -249,7 +249,7 @@ Proxy configure
 	source /etc/profile.d/squid_proxy_vars.sh
 
 	mkdir -p /etc/systemd/system/docker.service.d
-	ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
+	ipaddr=$(ip -4 -o a s dev docker0 | awk '{sub("/..","",$4); print $4}')
 	cat >/etc/systemd/system/docker.service.d/http-proxy.conf <<EOF
 	[Service]
 	Environment="HTTP_PROXY=${http_proxy/127.0.0.1/$ipaddr}"
@@ -261,14 +261,14 @@ Proxy configure
 	EOF
 
 	cat >/etc/squid/conf.d/docker.conf <<EOF
-	acl dockernet src 192.168.0.0/16
-	acl dockernet src 172.0.0.0/8
+	acl dockernet src ${ipaddr/.*/}.0.0.0/8
 	http_access allow dockernet
 	EOF
 
+	ufw allow squid
 	systemctl daemon-reload
-	systemctl reload squid
 	systemctl restart docker
+	systemctl reload squid
 
 
 License
