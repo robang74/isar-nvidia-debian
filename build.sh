@@ -49,6 +49,11 @@ for i in pigz pzstd; do
 	fi
 done
 
+mkdir -p build/downloads/dash
+for i in $(ls -1 dash/dash-*.static); do
+    ln -Pf $i build/downloads/dash
+done 2>/dev/null
+
 cd recipes-core/images ########################################################
 
 if [ "$1" == "--help" -o "$1" == "-h"  ]; then
@@ -120,6 +125,10 @@ fi
 
 cd - >/dev/null ###############################################################
 
+test -d build/tmp/schroot-overlay && \
+    find build/tmp/schroot-overlay -name isar-imager-builder-eval-image-\* \
+        -exec sudo rm -rf --one-file-system {} +
+
 ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}
@@ -128,7 +137,8 @@ env | grep _proxy= && echo || unset no_proxy ftp_proxy https_proxy http_proxy
 
 cd $topdir
 if [ ! -d isar/.git ]; then
-	time ./kas-container $kasopt checkout "$kasyml" || exit $?
-	echo
+    time ./kas-container $kasopt checkout "$kasyml" || exit $?
+    test  "$1" == "isar" && exit 0
+    echo
 fi
 time ./kas-container $kasopt build ${1:+--target $1} "$kasyml"
