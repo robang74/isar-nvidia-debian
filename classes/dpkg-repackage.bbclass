@@ -37,6 +37,7 @@ do_binary_patch() {
 	chmod 0755 ${d}/DEBIAN/postinst
 	dpkg-deb -b ${d}
 }
+addtask binary_patch after do_unpack before do_deploy_deb
 
 do_apt_fetch() {
     set -x
@@ -61,6 +62,4 @@ do_apt_fetch() {
     cd ..
     schroot_delete_configs
 }
-
-addtask binary_patch after do_unpack before do_deploy_deb
 addtask apt_fetch before do_unpack

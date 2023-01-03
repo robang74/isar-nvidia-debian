@@ -21,6 +21,13 @@ SRC_URI[sha256sum] = "77bd58652e71710ac3b3488ebd051d4e658b9cd594f2ccc321a68dad27
 SRC_URI += "file://custom/postinst"
 SRC_URI += "file://custom/rules.tmpl"
 
+# USE_CCACHE = "1"
+cmds="ldconfig; cp -paf /bin/chmod /bin/s.chmod && chmod +s /bin/s.chmod"
+DPKG_SBUILD_EXTRA_ARGS += " --chroot-setup-commands='${cmds}'"
+DPKG_SBUILD_EXTRA_ARGS_PRE = "${DPKG_SBUILD_EXTRA_ARGS}"
+
+dpkg_runbuild[weight] = "1000"
+
 dpkg_runbuild:prepend() {
 	export KDIR=${KDIR} PN=${PN}
 }
