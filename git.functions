@@ -9,8 +9,9 @@
 #
 
 function irebase() {
-	hash=$(git rev-list --parents -n2 "$1" | tail -n1 | head -c40)
-	git rebase -i $hash
+    test -n "$1" || return 1
+    hash=$(git rev-list --parents -n2 "$1" | tail -n1 | head -c40)
+    test -n "$hash" && git rebase -i $hash
 }
 export -f irebase
 
@@ -185,7 +186,108 @@ export -f fpatch
 
 function chpk() {
 	for i in $@; do
-		git cherry-pick $i || break
+		git cherry-pick $i || return $?
 	done
 }
 export -f chpk
+
+function lsbr() {
+    git branch -r | grep -ve "/HEAD$" -ve "/HEAD " | cut -d/ -f2-
+}
+export -f lsbr
+
+function for-all-other-branches() {
+    test "x$1" == "x" && return 1
+
+    local warn=$(st | grep -e "^Changes [not]* ")
+    if [ -n "$warn" ]; then
+        echo "WARNING: changes pending, please stash or commit. Abort!" >&2
+        return 1
+    fi
+
+#   local sha=$(git rev-parse --short HEAD)
+    local cur=$(git branch --show-current)
+    if [ "$cur" == "" ]; then
+        echo "ERROR: this is not the HEAD of a branch. Abort!" >&2
+        return 1
+    fi
+
+    declare -i nbr=$(lsbr | wc -l)
+    if [ $nbr -le 1 ]; then
+        echo "DONE: there is only one branch '$cur' as current. Abort!" >&2
+        return 0
+    fi
+
+    if echo "x$@" | grep -q "fpush"; then
+        echo "ERROR: fpush is not allowed for safety. Abort!" >&2
+        return 1
+    fi
+    if echo "x$@" | grep -qe "push.*-f"; then
+        echo "ERROR: push -f is not allowed for safety. Abort!" >&2
+        return 1
+    fi
+    if echo "x$@" | grep -q -- "--force"; then
+        echo "ERROR: option --force is not allowed for safety. Abort!" >&2
+        return 1
+    fi
+
+    local rpull="true"
+    while true; do
+        if [ "x$1" == "x-p" ]; then
+            rpull="git pull"
+        elif [ "x$1" == "x-r" ]; then
+            rpull="rpull"
+        elif [ "x$1" == "x-a" ]; then
+            BRANCHES=$(lsbr)
+        else
+            break
+        fi
+        shift
+    done
+
+    if ! cd $(git rev-parse --show-toplevel); then
+        echo "ERROR: cannot change folder to the top level. Abort!" >&2
+        return 1
+    fi
+    git fetch origin || return $?
+
+    BRANCHES=${BRANCHES:-$(lsbr | grep -vwe "$cur")}
+	for branch in ${BRANCHES}; do
+        if ! git switch $branch; then
+            echo
+            echo "branch: $branch, SKIP"
+            echo "press ENTER to continue..."
+            read
+        elif eval "$rpull" && eval "$@"; then
+            echo
+            echo "branch: $branch, OK"
+            echo
+        else
+            echo
+            echo "branch: $branch, KO"
+            echo "fix the problem and then type exit"
+            echo "or type exit 1 to abort completely"
+            echo
+            local ret=0
+            gitrc=$(mktemp -p "$TMPDIR" gitrc.XXXX)
+            cat git.functions >"$gitrc"
+            echo "PS1='+git:'$branch'> '" >>"$gitrc"
+            if ! bash --rcfile "$gitrc" -ri; then
+                git switch $cur
+                rm -f "$gitrc"
+                return 1
+            fi
+            rm -f "$gitrc"
+        fi
+	done
+    unset BRANCHES
+
+    git switch $cur
+}
+export -f for-all-other-branches
+
+function lgrp() {
+    local strn=$1; shift
+    lg "$@" | grep "$strn" | awk '{print $2}' | egrep .
+}
+export -f lgrp
