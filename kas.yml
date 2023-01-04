@@ -22,7 +22,7 @@ repos:
 
   isar:
     url: https://github.com/robang74/isar
-    refspec: 5303fe5
+    refspec: 4f8b968
     layers:
       meta:
 
