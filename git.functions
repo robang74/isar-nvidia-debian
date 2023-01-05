@@ -8,8 +8,10 @@
 # SPDX-License-Identifier: MIT
 #
 
+source "$(dirname $0)/colors.shell"
+
 function irebase() {
-    test -n "$1" || return 1
+    test -z "$1" && return 1
     hash=$(git rev-list --parents -n2 "$1" | tail -n1 | head -c40)
     test -n "$hash" && git rebase -i $hash
 }
@@ -49,7 +51,7 @@ function ff() {
 export -f ff
 
 function rl() {
-	git reflog
+	git reflog "$@"
 }
 export -f rl
 
@@ -64,27 +66,28 @@ function cm() {
 export -f cm
 
 function amend() {
-	git commit --amend
+	git commit --amend "$@"
 }
 export -f amend
 
 function rebcont() {
-	git rebase --continue
+	git rebase --continue "$@"
 }
 export -f rebcont
 
 function editorset() {
-	 git config --global core.editor "$1"
+    test -z "$1" && return 1
+    git config --global core.editor "$1"
 }
 export -f editorset
 
 function rpull() {
-	git pull --rebase
+	git pull --rebase "$@"
 }
 export -f rpull
 
 function fpush() {
-	git push --force
+	git push --force "$@"
 }
 export -f fpush
 
@@ -97,6 +100,11 @@ function sw() {
 	git show "$@"
 }
 export -f sw
+
+function forig() {
+    git fetch origin "$@"
+}
+export -f forig
 
 function ccache() {
 	local -i t=3600 runcmd=1
@@ -129,7 +137,7 @@ function ccache() {
 			fi
 			git -c credential.helper='!f() { echo "password=$(cat '$d'/.gitpasswd)"; }; f' push --dry-run 2>/dev/null
 		else
-			git fetch origin
+			forig
 		fi
 		echo -e "git password cache enable for ${t}s eq. to $[t/3600]h $[(t%3600)/60]m $[t%60]s\n"
 	fi
@@ -143,24 +151,27 @@ function rcont() {
 export -f rcont
 
 function stash() {
-	git stash
+	git stash "$@"
 }
 export -f stash
 
 function pop() {
-	git stash pop
+	git stash pop "$@"
 }
 export -f pop
 
 function tagdel() {
-	git push --delete origin "$1"
-	git tag -d "$1"
+    test -z "$1" && return 1
+    git push --delete origin "$1"
+    git tag -d "$@"
 }
 export -f tagdel
 
 function tagadd() {
-	git tag -a "$1" $2 -m "$1" && \
-	git push origin --tags
+    test -z "$1" && return 1
+    local tag="$1"; shift
+    git tag -a "$tag" "$@" -m "$tag" && \
+        git push origin --tags
 }
 export -f tagadd
 
@@ -180,12 +191,13 @@ function pull() {
 export -f pull
 
 function fpatch() {
+    test -z "$1" && return 1
 	git format-patch -1 "$@"
 }
 export -f fpatch
 
 function chpk() {
-	for i in $@; do
+	for i in "$@"; do
 		git cherry-pick $i || return $?
 	done
 }
@@ -196,42 +208,42 @@ function lsbr() {
 }
 export -f lsbr
 
-function for-all-other-branches() {
-    test "x$1" == "x" && return 1
+function bsw() {
+    test -z "$1" && return 1
+    git switch "$@"
+}
+export -f bsw
 
-    local warn=$(st | grep -e "^Changes [not]* ")
-    if [ -n "$warn" ]; then
-        echo "WARNING: changes pending, please stash or commit. Abort!" >&2
-        return 1
-    fi
+function for-all-other-branches() {
+    test -z "$1" && return 1
 
 #   local sha=$(git rev-parse --short HEAD)
     local cur=$(git branch --show-current)
     if [ "$cur" == "" ]; then
-        echo "ERROR: this is not the HEAD of a branch. Abort!" >&2
+        echo -e "${ERROR}: this is not the HEAD of a branch. Abort!" >&2
         return 1
     fi
 
     declare -i nbr=$(lsbr | wc -l)
     if [ $nbr -le 1 ]; then
-        echo "DONE: there is only one branch '$cur' as current. Abort!" >&2
+        echo -e "${DONE}: there is only one branch '$cur' as current. Abort!" >&2
         return 0
     fi
 
     if echo "x$@" | grep -q "fpush"; then
-        echo "ERROR: fpush is not allowed for safety. Abort!" >&2
+        echo -e "${ERROR}: fpush is not allowed for safety. Abort!" >&2
         return 1
     fi
     if echo "x$@" | grep -qe "push.*-f"; then
-        echo "ERROR: push -f is not allowed for safety. Abort!" >&2
+        echo -e "${ERROR}: push -f is not allowed for safety. Abort!" >&2
         return 1
     fi
     if echo "x$@" | grep -q -- "--force"; then
-        echo "ERROR: option --force is not allowed for safety. Abort!" >&2
+        echo -e "${ERROR}: option --force is not allowed for safety. Abort!" >&2
         return 1
     fi
 
-    local rpull="true"
+    local rpull="true" stashpop=0
     while true; do
         if [ "x$1" == "x-p" ]; then
             rpull="git pull"
@@ -239,54 +251,71 @@ function for-all-other-branches() {
             rpull="rpull"
         elif [ "x$1" == "x-a" ]; then
             BRANCHES=$(lsbr)
+        elif [ "x$1" == "x-s" ]; then
+            stashpop=1
         else
             break
         fi
         shift
     done
 
-    if ! cd $(git rev-parse --show-toplevel); then
-        echo "ERROR: cannot change folder to the top level. Abort!" >&2
+    if [ $stashpop -eq 0 ]; then
+        local warn=$(st | grep -e "^Changes [not]* ")
+        if [ -n "$warn" ]; then
+            echo -e "${WARNING}: changes pending, please stash (-s) or commit. Abort!" >&2
+            return 1
+        fi
+    fi
+
+    curdir=$(readlink -f $PWD)
+    topdir=$(readlink -f $(git rev-parse --show-toplevel))
+    if [ "$curdir" == "$topdir" ]; then
+        true
+    elif ! cd $topdir; then
+        echo -e "${ERROR}: cannot change folder to the top level. Abort!" >&2
         return 1
     fi
-    git fetch origin || return $?
+    forig || return $?
+
+    test $stashpop -ne 0 && stash
 
     BRANCHES=${BRANCHES:-$(lsbr | grep -vwe "$cur")}
 	for branch in ${BRANCHES}; do
-        if ! git switch $branch; then
+        if ! bsw $branch; then
             echo
-            echo "branch: $branch, SKIP"
+            echo -e "${byellow}branch: $branch, SKIP${coloff}"
             echo "press ENTER to continue..."
             read
         elif eval "$rpull" && eval "$@"; then
             echo
-            echo "branch: $branch, OK"
+            echo -e "${bgreen}branch: $branch, OK${coloff}"
             echo
         else
             echo
-            echo "branch: $branch, KO"
+            echo -e "${bired}mbranch: $branch, KO${coloff}"
             echo "fix the problem and then type exit"
             echo "or type exit 1 to abort completely"
             echo
             local ret=0
             gitrc=$(mktemp -p "$TMPDIR" gitrc.XXXX)
             cat git.functions >"$gitrc"
-            echo "PS1='+git:'$branch'> '" >>"$gitrc"
+            echo "PS1='${bcyan}+git${coloff}:${byellow}'$branch'${coloff}> '" >>"$gitrc"
             if ! bash --rcfile "$gitrc" -ri; then
-                git switch $cur
                 rm -f "$gitrc"
+                bsw $cur
                 return 1
             fi
             rm -f "$gitrc"
         fi
 	done
     unset BRANCHES
-
-    git switch $cur
+    test "$cur" != "$branch" && bsw $cur
+    test $stashpop -ne 0 && pop
 }
 export -f for-all-other-branches
 
 function lgrp() {
+    test -z "$1" && return 1
     local strn=$1; shift
     lg "$@" | grep "$strn" | awk '{print $2}' | egrep .
 }
