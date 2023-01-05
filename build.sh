@@ -125,6 +125,11 @@ fi
 
 cd - >/dev/null ###############################################################
 
+for i in git.functions colors.shell; do
+    repo_uri="https://raw.githubusercontent.com/robang74/git-functions/main"
+    wget -q --background ${repo_uri}/$i -O $i
+done
+
 ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}
