@@ -125,10 +125,6 @@ fi
 
 cd - >/dev/null ###############################################################
 
-test -d build/tmp/schroot-overlay && \
-    find build/tmp/schroot-overlay -name isar-imager-builder-eval-image-\* \
-        -exec sudo rm -rf --one-file-system {} +
-
 ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}

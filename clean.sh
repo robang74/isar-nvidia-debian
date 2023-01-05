@@ -25,6 +25,13 @@ case $1 in
 		;;
 	isar|tmp) ./kas-container --isar clean
 		;;
-	*) print_help
+	*) print_help; exit 0
 		;;
 esac
+
+for dir in build/tmp/schroot-overlay /var/lib/schroot/session; do
+    test -d $dir && \
+        find $dir -name isar-imager-builder-\* \
+            -exec sudo rm -rf --one-file-system {} +
+done
+
