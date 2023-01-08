@@ -1,4 +1,4 @@
-source git.functions
+#source git.functions
 alias clean="./clean.sh"
 alias build="./build.sh"
 alias wicinst="./wicinst.sh"
