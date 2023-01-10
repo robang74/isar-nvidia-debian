@@ -136,7 +136,23 @@ for i in $(env | grep -e "_proxy="); do
 done
 env | grep _proxy= && echo || unset no_proxy ftp_proxy https_proxy http_proxy
 
-cd $topdir
+if egrep -q "url: .*/isar.priv" kas.yml; then
+    if type pcache | grep -q "pcache is a function"; then
+        if cd isar 2>/dev/null; then
+            pcache; cd -
+        else
+            echo "notice: isar folder is not preset"
+            echo "git.passwd: $(cat .gitpasswd)"
+            echo
+        fi
+    else
+        echo "notice: pcache is not defined here"
+        echo "git.passwd: $(cat .gitpasswd)"
+        echo
+    fi
+fi
+
+cd $topdir >/dev/null
 if [ ! -d isar/.git ]; then
     time ./kas-container $kasopt checkout "$kasyml" || exit $?
     test  "$1" == "isar" && exit 0

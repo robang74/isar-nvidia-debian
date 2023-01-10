@@ -11,7 +11,10 @@ function ms() {
 function chkfds() {
   st=$(fds); mx=0;
   while sleep 1; do ct=$[st-$(fds)];
-  if [ $ct -gt $mx ]; then printf "%5s Mb\n" $ct; mx=$ct; fi;
+  if [ $ct -gt $mx ]; then
+      printf "%5s Mb\n" $ct
+      mx=$ct
+  fi >/dev/null
   done; ct=$[st-$(fds)];
   printf "%5s Mb (max)\n" $mx;
   printf "%5s Mb (rest)\n" $ct;
@@ -20,4 +23,11 @@ function chkfds() {
   printf "%5s Mb (cache)\n" $(ms build/sstate-cache);
 }
 
-chkfds & read; killall sleep; sleep 1; echo
+echo "Cleaning all ..."
+./clean.sh all
+chkfds & ./build.sh $1
+for i in $(seq 1 10); do
+    sleep 0.15
+    killall sleep && break
+done 2>/dev/null
+echo
