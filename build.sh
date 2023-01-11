@@ -125,10 +125,12 @@ fi
 
 cd - >/dev/null ###############################################################
 
-for i in git.functions colors.shell; do
-    repo_uri="https://raw.githubusercontent.com/robang74/git-functions/main"
-    wget -q --background ${repo_uri}/$i -O $i
-done
+if false; then
+    for i in git.functions colors.shell; do
+        repo_uri="https://raw.githubusercontent.com/robang74/git-functions/main"
+        wget -q --background ${repo_uri}/$i -O $i
+    done
+fi
 
 ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
