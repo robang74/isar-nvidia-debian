@@ -38,6 +38,7 @@ trap "rm -rf '$d'" EXIT
 declare -i szgb=$1 2>/dev/null
 test "${szgb%0}" != "" && shift
 fimg=${1:-eval-$(show_current | tr -d '-')-vm}
+fimg=$(basename $fimg)
 fimg=${fimg%\.ova}
 
 if [ -e "$topdir/$fimg.ova" -o -e "$topdir/$fimg.ova.7z" ]; then
