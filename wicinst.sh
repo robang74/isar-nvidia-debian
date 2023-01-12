@@ -106,7 +106,7 @@ elif [ -n "$vmdk" ]; then
 		read key
 		sudo apt install -f qemu-utils
 	fi
-	uuid=$(fdisk -l "$fimg" | sed -ne "s,Disk identifier: \(.*\),\\1,p" | tr [A-Z] [a-z])
+	uuid=$(fdisk -l "$fimg" | sed -ne "s,Disk identifier: \(.*\),\\1,p" | tr '[A-Z]' '[a-z]')
 	echo "UUID read: $uuid"
 	echo "$uuid" | grep -q "^........-....-....-....-............$" || uuid=""
 	if which VBoxManage >/dev/null; then
