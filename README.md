@@ -99,18 +99,21 @@ that unlock AMD Ryzen CPUs a more +51% of computation power lost due to an old b
 Virtual disk `build me` download
 --------------------------------
 
-This Microsoft OneDrive link works with a web browser only:
+Everyone without any authentication can download this virtual machine:
 
-- https://1drv.ms/u/s!ArH4FO-H0IhyglZou3fYJQJWngff
+- isar-buildme-vm.ova.7z.001 (140 MB)
+    - http://www.linuxteam.org/files/isar-buildme-vm.ova.7z.001
 
-and let everyone without any authentication to download a virtual machine:
+- isar-buildme-vm.ova.7z.002 (139 MB)
+    - http://www.linuxteam.org/files/isar-buildme-vm.ova.7z.002
 
-- isar-buildme-vm.ova.7z (237 MB)
+which the integrity could be verified with these two different hashes:
 
-which the integrity could be verified with these two hashes:
+- md5sum 58526f014134073752b9c75cc53a0e4a isar-buildme-vm.ova.7z.001
+- md5sum 034b332027a4a413710c317c96f0436c isar-buildme-vm.ova.7z.002
 
-- md5sum bab4a33a56144d8346d478474fdc1673
-- sha256sum e1ba4d5e48f46827a23b92356d61d25b45ef8a62
+- sha1sum 59ed71725d1e32af8d16b974b62e0254f08a7dfe isar-buildme-vm.ova.7z.001
+- sha1sum 0b23641110ae0012a6c2742b7296a6d1fe61d7b7 isar-buildme-vm.ova.7z.002
 
 and let every Microsoft Windows user to build its own image using a virtual
 machine like Oracle VirtualBox. Please note that in the VM settings you should
@@ -121,6 +124,12 @@ The virtual machine is accessible also by SSH using every client:
 	ssh -p2022 -o StrictHostKeyChecking=no root@localhost (password root)
 
 The first action to do is to change the passwords for users: root and debraf
+
+You might want to install the VirtualBox drivers to activate the shared folder
+
+    /home/debraf/vbox-guest-inst-by-apt.sh # for the network installation
+
+    /home/debraf/vbox-guest-inst-by-sr0.sh # for the installation by cdrom
 
 The first time to access the local apt cache `sudo apt update` is needed
 
@@ -150,6 +159,10 @@ to laod the git functions and local scripts aliases
 
 Otherwise you can use this by command line:
 
+58526f014134073752b9c75cc53a0e4a  isar-buildme-vm.ova.7z.001
+034b332027a4a413710c317c96f0436c  isar-buildme-vm.ova.7z.002
+59ed71725d1e32af8d16b974b62e0254f08a7dfe  isar-buildme-vm.ova.7z.001
+0b23641110ae0012a6c2742b7296a6d1fe61d7b7  isar-buildme-vm.ova.7z.002
 	./build.sh [ $BBTARGET | $IMAGE ]
 
 The Bitbake target could be any recipe.
