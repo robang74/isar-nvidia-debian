@@ -95,7 +95,8 @@ if [ -n "$bdev" ]; then
 		time (sudo dd if="$fimg" bs=1M of=$bdev status=progress; sync $bdev)
 	fi
 elif [ -n "$file" ]; then 
-	time (cp -paf "$fimg" "$file"; sync "$file")
+	ln -Pf "$fimg" "$file" 2>/dev/null ||\
+	    time (cp -paf "$fimg" "$file"; sync "$file")
 elif [ -n "$pigz" ]; then
 	time (pigz -c "$fimg" | dd bs=1M status=progress >"$pigz"; sync "$pigz")
 elif [ -n "$vmdk" ]; then
