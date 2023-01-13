@@ -75,19 +75,20 @@ echo; cd'
 }
 
 if [ "$(whoami)" != "root" ]; then
-        echo
-        echo "WARNING: this script should run as root, sudo!"
-	sudo -E $0 "$@"
-        exit $?
+    echo
+    echo "WARNING: this script should run as root, sudo!"
+    sudo -E $0 "$@"
+    exit $?
 fi
-
-cd $(dirname $0)
 
 if [ -e "$1" ]; then
 	fimg=$(readlink -e $1)
 fi
 
+cd $(dirname $0)
+
 if [ ! -n "$1" -a  ! -e "$fimg" ]; then
+    echo "Searching the image..."
 	fimg=$(ls -1 build/tmp/deploy/images/*/*.wic)
 	n=( $fimg )
 	if [ ${#n[@]} -gt 1 ]; then
