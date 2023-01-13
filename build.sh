@@ -145,4 +145,15 @@ if [ ! -d isar/.git ]; then
     test  "$1" == "isar" && exit 0
     echo
 fi
+
+epoch_git_this=$(git log -1 --pretty=%ct)
+epoch_git_isar=$(cd isar; git log -1 --pretty=%ct)
+if [ $epoch_git_this -gt $epoch_git_isar ]; then
+    echo $epoch_git_this
+else
+    echo $epoch_git_isar
+fi > build/epoch.last
+#echo 1673628837 >build/epoch.last
+
 time ./kas-container $kasopt build ${1:+--target $1} "$kasyml"
+
