@@ -22,7 +22,7 @@ repos:
 
   isar:
     url: https://github.com/robang74/isar
-    refspec: 2c16d63
+    refspec: nvidia
     layers:
       meta:
 
