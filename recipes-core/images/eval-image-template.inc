@@ -23,6 +23,7 @@ IMAGE_INSTALL += "expand-on-first-boot"
 WIC_IMAGER_INSTALL += "btrfs-progs"
 WIC_DEPLOY_PARTITIONS = "0"
 
-rootfs_install_sstate_prepare() {
-	true
+# RAF: remove 'none_' prefix from this line to disable the image rootfs caching
+none_rootfs_install_sstate_prepare() {
+    bbwarn "image rootfs cache has been disabled, use 'clean all' only"
 }
