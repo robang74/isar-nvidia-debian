@@ -136,7 +136,8 @@ ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}
 done
-echo "WARNING: the proxy enviroment variables are unset"
+echo "${WARNING:-WARNING}: the proxy enviroment variables are unset"
+echo
 unset no_proxy ftp_proxy https_proxy http_proxy
 
 cd $topdir >/dev/null
@@ -156,4 +157,4 @@ fi > build/epoch.last
 #echo 1673628837 >build/epoch.last
 
 time ./kas-container $kasopt build ${1:+--target $1} "$kasyml"
-
+echo -e "\nbuild completed on $(date +"%Y-%m-%d %T")\n"
