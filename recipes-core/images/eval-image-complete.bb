@@ -13,6 +13,11 @@ require eval-image-nvdocker.inc
 
 DESCRIPTION = "${DESCHEAD} Gnome3 + CUDA devel + GPU support + docker"
 
+# RAF: remove 'none_' prefix from this line to disable the image rootfs caching
+none_rootfs_install_sstate_prepare() {
+    bbwarn "image rootfs cache has been disabled, use 'clean all' only"
+}
+
 IMAGE_PREINSTALL += "nvidia-persistenced=${nver} nvidia-modprobe=${nver} \
 	nvidia-legacy-check=${nver} \
 "
