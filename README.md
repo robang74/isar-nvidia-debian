@@ -139,7 +139,7 @@ Dependencies
 
 A GNU/Linux host with docker or podman installed
 
-	sudo apt install docker.io |XOR| docker-ce |XOR| podman
+	sudo apt install pigz docker.io |XOR| docker-ce |XOR| podman
 
 User account with permissions to run docker
 
