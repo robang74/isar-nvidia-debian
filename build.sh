@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) Roberto A. Foglietta, 2022
+# Copyright (c) Roberto A. Foglietta, 2022-2023
 #
 # Authors:
 #  Roberto A. Foglietta <roberto.foglietta@gmail.com>
@@ -136,23 +136,8 @@ ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}
 done
-env | grep _proxy= && echo || unset no_proxy ftp_proxy https_proxy http_proxy
-
-if egrep -q "url: .*/isar.priv" kas.yml; then
-    if type pcache | grep -q "pcache is a function"; then
-        if cd isar 2>/dev/null; then
-            pcache; cd -
-        else
-            echo "notice: isar folder is not preset"
-            echo "git.passwd: $(cat .gitpasswd)"
-            echo
-        fi
-    else
-        echo "notice: pcache is not defined here"
-        echo "git.passwd: $(cat .gitpasswd)"
-        echo
-    fi
-fi
+echo "WARNING: the proxy enviroment variables are unset"
+unset no_proxy ftp_proxy https_proxy http_proxy
 
 cd $topdir >/dev/null
 if [ ! -d isar/.git ]; then
