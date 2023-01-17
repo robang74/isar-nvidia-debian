@@ -5,6 +5,7 @@
 # Copyright (C) 2017-2019 Siemens AG
 # Copyright (C) 2019 ilbers GmbH
 # Copyright (C) 2022 Siemens AG
+# Copyright (C) 2023 Roberto A. Foglietta
 #
 # Authors:
 #  Roberto A. Foglietta <roberto.foglietta@gmail.com>
@@ -18,7 +19,6 @@ SRC_URI = "apt://${PN}"
 
 do_binary_patch[cleandirs] += "${WORKDIR}/${PN}"
 do_binary_patch() {
-	set -x
 	test -n "${SED_REGEX}"
 	n=$(echo ${SRC_APT} ${SRC_URI} | wc -w)
 	test $n -eq 1 
@@ -40,7 +40,6 @@ do_binary_patch() {
 addtask binary_patch after do_unpack before do_deploy_deb
 
 do_apt_fetch() {
-    set -x
     E="${@ isar_export_proxies(d)}"
     schroot_create_configs
 
@@ -50,16 +49,25 @@ do_apt_fetch() {
     trap 'exit 1' INT HUP QUIT TERM ALRM USR1
     trap 'schroot_cleanup' EXIT
 
+    debgetname() {
+        dpkg -I "$1" | sed -ne "s,^ *Package: \(.*\),\\1,p"
+    }
     d="/downloads/deb/${DISTRO}"
     for uri in ${SRC_APT}; do
-        schroot -d / -c ${SBUILD_CHROOT} -- \
-            sh -c "mkdir -p ${d} && cd ${d} && apt download -y ${uri}"
+        if ! sudo schroot -d / -c ${SBUILD_CHROOT} -- sh -c "mkdir -p ${d} \
+                && cd ${d} && apt-get install --download-only ${uri}"; then
+            for i in $(ls -1 /build/${d}/${uri}*.deb); do
+                test "$(debgetname)" = "$uri" && continue
+            done
+        fi
     done
+
     cd downloads
     for uri in ${SRC_URI}; do
-	wget -c ${uri}
+        wget -c ${uri}
     done
     cd ..
+
     schroot_delete_configs
 }
 addtask apt_fetch before do_unpack
