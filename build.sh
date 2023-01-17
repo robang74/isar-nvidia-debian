@@ -136,6 +136,7 @@ ipaddr=$(ip addr show dev docker0 | sed -ne "s, *inet \([0-9.]*\).*,\\1,p")
 for i in $(env | grep -e "_proxy="); do
 	export ${i/127.0.0.1/$ipaddr}
 done
+echo "WARNING: the proxy enviroment variables are unset"
 unset no_proxy ftp_proxy https_proxy http_proxy
 
 cd $topdir >/dev/null
