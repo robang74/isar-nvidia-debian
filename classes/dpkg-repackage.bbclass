@@ -57,7 +57,10 @@ do_apt_fetch() {
         if ! sudo schroot -d / -c ${SBUILD_CHROOT} -- sh -c "mkdir -p ${d} \
                 && cd ${d} && apt-get install --download-only ${uri}"; then
             for i in $(ls -1 /build/${d}/${uri}*.deb); do
-                test "$(debgetname)" = "$uri" && continue
+                if [ "$(debgetname)" == "$uri" ]; then
+                    bbwarn "cannot download the deb package $uri, using the newest in downloads"
+                    continue
+                fi
             done
         fi
     done
