@@ -44,6 +44,8 @@ image_cache_msg=${image_cache/disabled/${DWHT:-}disabled${CRST}, use \'${BLWHT:-
 image_cache_msg=${image_cache_msg/active/${BLGRN:-}active${CRST:-}}
 echo -e "\n${NOTICE}: the image rootfs is ${image_cache_msg}\n"
 
+echo -e "Cleaning target: $1\n"
+
 case $1 in
 	all) sudo rm -rf $(ls -1d build/* 2>/dev/null | grep -ve "^build/downloads")
 		;;	
