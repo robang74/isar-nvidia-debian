@@ -35,7 +35,8 @@ do_binary_patch() {
 	sed -e "s,^\(Maintainer:\).*,\\1 isar repackaged," -e "/^$/d" -i ${d}/DEBIAN/control
 	echo "while ! apt-mark hold ${PN} >/dev/null 2>&1; do sleep 4; done &" >> ${d}/DEBIAN/postinst
 	chmod 0755 ${d}/DEBIAN/postinst
-	dpkg-deb -b ${d}
+	export XZ_OPT="-T 8" # RAF: number sets to 8 because it should be great enough for many others
+    dpkg-deb -b ${d}
 }
 addtask binary_patch after do_unpack before do_deploy_deb
 
