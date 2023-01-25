@@ -48,7 +48,6 @@ IMAGE_PREINSTALL += "libxnvctrl-dev=${nver} libxnvctrl0=${nver} nvidia-cuda-mps=
 	nvidia-settings=${nver} nvidia-xconfig=${nver} libnvidia-cfg1=${nver} \
 "
 
-IMAGE_INSTALL += " nvidia-fs cuda-drivers-515"
 IMAGE_PREINSTALL += " cuda-demo-suite-${cver}"
 IMAGE_PREINSTALL += " nvidia-gds-${cver}"
 
@@ -59,3 +58,11 @@ IMAGE_PREINSTALL += " task-gnome-desktop \
 "
 
 IMAGE_INSTALL += " linux-headers-${KERNEL_NAME}"
+
+IMAGE_INSTALL += " nvidia-fs cuda-drivers-515"
+
+rootfs_install_pkgs_install:append() {
+    sudo killall sleep && sleep 1 && return 0
+    sudo -E chroot "${ROOTFSDIR}" sh -c "killall sleep && sleep 1"
+    return 0
+}

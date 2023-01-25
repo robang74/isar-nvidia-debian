@@ -13,6 +13,16 @@
 # SPDX-License-Identifier: MIT
 #
 
+# RAF: do_binary_patch() sleep 4 should be terminate at the end of rootfs_install_pkgs_install()
+#      to achieve this result it should copied into image that IMAGE_INSTALL a repackaging .deb
+
+rootfs_install_pkgs_install:append() {
+    sudo -E chroot "${ROOTFSDIR}" sh -c "killall sleep && sleep 1"
+    return 0
+}
+
+################################################################################################
+
 inherit dpkg-prebuilt
 
 SRC_URI = "apt://${PN}"

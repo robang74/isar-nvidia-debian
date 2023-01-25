@@ -24,3 +24,8 @@ IMAGE_PREINSTALL += "htop dos2unix lynx psmisc pigz \
 "
 
 IMAGE_INSTALL += " nvidia-fs "
+
+rootfs_install_pkgs_install:append() {
+    sudo -E chroot "${ROOTFSDIR}" sh -c "killall sleep && sleep 1"
+    return 0
+}
