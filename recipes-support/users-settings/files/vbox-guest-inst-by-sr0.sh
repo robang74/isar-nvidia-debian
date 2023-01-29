@@ -38,6 +38,7 @@ mkdir -p /tmp/vboxguest
 
 echo -e "\twith these arguments: $opt" "$@"
 echo -e "\twhile lsmod returns: $mod"
+echo
 cd /mnt/cdrom
 ret=0; ./VBoxLinuxAdditions.run $opt "$@" || ret=$?
 cd - >/dev/null
