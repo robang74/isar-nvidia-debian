@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) Roberto A. Foglietta, 2022
+# Copyright (c) Roberto A. Foglietta, 2022-2023
 #
 # Authors:
 #  Roberto A. Foglietta <roberto.foglietta@gmail.com>
@@ -8,24 +8,51 @@
 # SPDX-License-Identifier: MIT
 #
 
-test "$1" != "root" && sudo $0 root
-test "$1" != "root" && exit 0
+if [ "$1" != "root" ]; then
+	sudo $0 root "$@"
+	exit $?
+else
+	shift
+fi
+
+set -e
+trap 'echo "ERROR: in '$0' at line $LINENO, try to run with set -x"' ERR
+
 echo "Running $0 as $(whoami)"
 
-opt=$(which Xorg | grep Xorg || echo "--nox11")
+mod=$(lsmod | grep vboxguest | cut -d' ' -f1)
+opt=$(which Xorg | grep -q Xorg || echo "--nox11")
+#
+# RAF: decomment this line to keep and debug the vboxguest installation package
+#
+#opt="$opt --keep --target /tmp/vboxguest"
 url="https://raw.githubusercontent.com/denisandroid/uPD72020x-Firmware/master/UPDATE.mem"
 fwf="/lib/firmware/renesas_usb_fw.mem"
 test -e $fwf || wget -O $fwf $url
 
-mkdir -p /mnt/cdrom
+if ! mountpoint -q /mnt/cdrom 2>/dev/null; then
+	mkdir -p /mnt/cdrom
+	mount -r /dev/sr0 /mnt/cdrom
+fi
 mkdir -p /tmp/vboxguest
-mount /dev/sr0 /mnt/cdrom
+
+echo -e "\twith these arguments: $opt" "$@"
+echo -e "\twhile lsmod returns: $mod"
 cd /mnt/cdrom
-echo "opt: $opt"
-./VBoxLinuxAdditions.run $opt #--keep --target /tmp/vboxguest
-usermod -aG vboxsf debraf
+ret=0; ./VBoxLinuxAdditions.run $opt "$@" || ret=$?
 cd - >/dev/null
-umount /mnt/cdrom
+umount -l /mnt/cdrom ||:
+usermod -aG vboxsf debraf
+
+if test $ret -eq 2 -a -n "${mod:-}"; then
+	ret=0
+fi
+if [ $ret -ne 0 ]; then
+	echo
+	echo "ERROR: installing vboxguest drivers"
+	echo
+	exit $?
+fi
 echo
 echo "WARNING: you need to sudo reboot the system"
 echo
