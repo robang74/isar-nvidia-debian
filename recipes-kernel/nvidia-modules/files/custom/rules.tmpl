@@ -11,30 +11,8 @@ export DEB_BUILD_OPTIONS=parallel=$(shell nproc)
 
 export CROSS_COMPILE=$(DEB_HOST_GNU_TYPE)-
 
-ifeq ($(DEB_HOST_GNU_CPU), arm)
-export ARCH=arm
-endif
-ifeq ($(DEB_HOST_GNU_CPU), aarch64)
-export ARCH=arm64
-endif
-ifeq ($(DEB_HOST_GNU_CPU), riscv64)
-export ARCH=riscv
-endif
 ifneq (,$(findstring 86,$(DEB_HOST_GNU_CPU)))
 export ARCH=x86
-endif
-
-ifeq (${KERNEL_TYPE}, raspios)
-# In RaspiOS one package provides several headers
-KERNEL_SUFFIX := "+"
-ifeq (${KERNEL_NAME}, kernel8)
-KERNEL_SUFFIX := "-v8+"
-else ifeq (${KERNEL_NAME}, kernel7l)
-KERNEL_SUFFIX := "-v7l+"
-else ifeq (${KERNEL_NAME}, kernel7)
-KERNEL_SUFFIX := "-v7+"
-endif
-KDIR := $(shell dpkg -L ${KERNEL_HEADERS_PKG} | grep "/lib/modules/.*${KERNEL_SUFFIX}/build" | head -n1)
 endif
 
 ifeq ($(KDIR),)
@@ -47,19 +25,23 @@ KERNEL_DEP := $(shell dpkg-query -W -f '$${Depends}' ${KERNEL_HEADERS_PKG} | sed
 KDIR := $(shell dpkg -L $(KERNEL_DEP) | grep "/lib/modules/.*/build")
 endif
 
-export IGNORE_PREEMPT_RT_PRESENCE=1
-export SYSSRC=$(KDIR)
+export IGNORE_PREEMPT_RT_PRESENCE = 1
+export SYSSRC = /tmp/kdir
+export NV_VERBOSE = 0
 
 override_dh_auto_clean:
-	$(MAKE) clean || true
+	rm -rf /tmp/kdir
+	mkdir -p /tmp/kdir
+	cp -rf --reflink=auto $(KDIR)/* /tmp/kdir
+	cp -rf --reflink=auto $(KDIR:/build=/source)/* /tmp/kdir
+	$(MAKE) clean ${PARALLEL_MAKE} || true
 
 override_dh_auto_build:
-	s.chmod +s /bin/cp && cp -paf /bin/cp /tmp/s.cp; s.chmod -s /bin/cp
-	@/tmp/s.cp -arf /usr/lib/modules/*/source/* /usr/lib/modules/*/build/ || true
 	$(MAKE) modules ${PARALLEL_MAKE}
 
 override_dh_auto_install:
-	$(MAKE) INSTALL_MOD_PATH=$(PWD)/debian/$(PN) modules_install
+	find . -name \*.ko -exec strip --strip-debug {} +
+	$(MAKE) INSTALL_MOD_PATH=$(PWD)/debian/$(PN) modules_install ${PARALLEL_MAKE}
 
 %:
 	CFLAGS= LDFLAGS= dh $@ --parallel

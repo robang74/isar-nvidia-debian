@@ -12,7 +12,7 @@
 # Example of use: SRC_URI += "file://custom/control.tmpl"
 
 do_custom_debian_dir() {
-	set -ex
+	set -e
 	cd ${WORKDIR}
 	mkdir -p debian/isar
 	for i in ${SRC_URI}; do
@@ -22,7 +22,6 @@ do_custom_debian_dir() {
 	done
 	cd - >/dev/null
 }
-
 addtask custom_debian_dir after do_unpack before do_transform_template
 
 do_prepare_build:prepend() {
