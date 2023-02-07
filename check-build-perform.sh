@@ -49,6 +49,8 @@ function do_build_after_clean() {
     local clean=$1
     shift
     ./clean.sh $clean
+    echo -n "Syncing the disks..."; sync; echo -e " ${OK:-OK}"
+    grep --color=never -e Dirty: -e Writeback: /proc/meminfo
     chkfds & ./build.sh "$@"
     killsleep
 }
