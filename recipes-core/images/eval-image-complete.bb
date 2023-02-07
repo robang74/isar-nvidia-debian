@@ -1,5 +1,6 @@
 #
 # Copyright (c) Siemens AG, 2022
+# Copyright (c) Roberto A. Foglietta, 2023
 #
 # Authors:
 #  Jan Kiszka <jan.kiszka@siemens.com>
@@ -8,7 +9,7 @@
 # SPDX-License-Identifier: MIT
 #
 
-require eval-image-basicdev.bb
+require eval-image-gnomedev.bb
 require eval-image-nvdocker.inc
 
 DESCRIPTION = "${DESCHEAD} Gnome3 + CUDA devel + GPU support + docker"
@@ -48,18 +49,12 @@ IMAGE_PREINSTALL += "libxnvctrl-dev=${nver} libxnvctrl0=${nver} nvidia-cuda-mps=
 	nvidia-settings=${nver} nvidia-xconfig=${nver} libnvidia-cfg1=${nver} \
 "
 
-IMAGE_PREINSTALL += " cuda-demo-suite-${cver}"
-IMAGE_PREINSTALL += " nvidia-gds-${cver}"
-
 # RAF: graphical enviroment support for the nVidia Eclipsed base development GUI
-IMAGE_PREINSTALL += " task-gnome-desktop \
-	firefox-esr mesa-utils network-manager \
-	cuda-nsight-${cver} \
-"
+IMAGE_PREINSTALL += "cuda-demo-suite-${cver} nvidia-gds-${cver} cuda-nsight-${cver}"
 
-IMAGE_INSTALL += " linux-headers-${KERNEL_NAME}"
+IMAGE_INSTALL += "linux-headers-${KERNEL_NAME}"
 
-IMAGE_INSTALL += " nvidia-fs cuda-drivers-515"
+IMAGE_INSTALL += "nvidia-fs cuda-drivers-515"
 
 rootfs_install_pkgs_install:append() {
     sudo killall sleep && sleep 1 && return 0
