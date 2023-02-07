@@ -46,6 +46,20 @@ echo -e "\n${NOTICE}: the image rootfs is ${image_cache_msg}\n"
 
 echo -e "Cleaning target: $1\n"
 
+if false; then
+    mpoints=$(sudo find build -name archives -type d -exec mountpoint {} \;)
+    mpoints=$(echo "$mpoints" | sed -ne "s,\(.*\) is a mountpoint,\\1,p")
+    for i in $mpoints; do sudo umount $i; done
+    mpoints=$(sudo find build -name archives -type d -exec mountpoint {} \;)
+    mpoints=$(echo "$mpoints" | sed -ne "s,\(.*\) is a mountpoint,\\1,p")
+    if [ -n "$mpoints" ]; then
+        echo "${ERROR:-ERROR}: archives moint points present, cannot clean"
+        echo
+        echo "$mpoints"
+        echo
+    fi
+fi
+
 case $1 in
 	all) sudo rm -rf $(ls -1d build/* 2>/dev/null | grep -ve "^build/downloads")
 		;;	
@@ -57,9 +71,10 @@ case $1 in
 		;;
 esac
 
-for dir in build/tmp/schroot-overlay /var/lib/schroot/session; do
-    test -d $dir && \
-        find $dir -name isar-imager-builder-\* \
-            -exec sudo rm -rf --one-file-system {} +
-done
-
+if false; then
+    for dir in build/tmp/schroot-overlay /var/lib/schroot/session; do
+        test -d $dir && \
+            find $dir -name isar-imager-builder-\* \
+                -exec sudo rm -rf --one-file-system {} +
+    done
+fi
