@@ -52,6 +52,7 @@ addtask binary_patch after do_unpack before do_deploy_deb
 
 do_apt_fetch() {
     E="${@ isar_export_proxies(d)}"
+#   bbwarn "\n\t workdir: ${WORKDIR}\n\t schroot: ${SCHROOT_DIR}"
     schroot_create_configs
 
     schroot_cleanup() {
@@ -64,17 +65,28 @@ do_apt_fetch() {
         dpkg -I "$1" | sed -ne "s,^ *Package: \(.*\),\\1,p"
     }
     d="/downloads/deb/${DISTRO}"
+    deb_dl_dir_import "${SCHROOT_DIR}" "${DISTRO}"
     for uri in ${SRC_APT}; do
-        if ! sudo schroot -d / -c ${SBUILD_CHROOT} -- sh -c "mkdir -p ${d} \
-                && cd ${d} && apt-get install --download-only ${uri}"; then
-            for i in $(ls -1 /build/${d}/${uri}*.deb); do
-                if [ "$(debgetname)" == "$uri" ]; then
+        if ! sudo schroot -d / -c ${SBUILD_CHROOT} -- sh -c "\
+                set -e
+                mkdir -p ${d}; cd ${d}
+                apt download -y ${uri}"; then
+            found=0
+            name=$(echo "${uri}" | cut -d= -f1)
+            for i in $(ls -1v /build/${d}/${name}*.deb ||:); do
+                if [ "$(debgetname $i)" = "${name}" ]; then
                     bbwarn "cannot download the deb package $uri, using the newest in downloads"
-                    continue
+                    found=1
+                    break
                 fi
             done
+            if [ "$found" = "0" ]; then
+                bbfatal "cannot download the deb package $uri and did not find any local copy"
+                return 1
+            fi
         fi
     done
+    deb_dl_dir_export "${SCHROOT_DIR}" "${DISTRO}"
 
     cd downloads
     for uri in ${SRC_URI}; do
