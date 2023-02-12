@@ -56,15 +56,23 @@ function do_build_after_clean() {
 }
 export -f do_build_after_clean
 
+stty -echoctl
 log="build.log"
 
-test -n "$1" && rm -f recipes-core/images/eval-image.bb
+if [ -n "$1"  ]; then
+    rm -f recipes-core/images/eval-image.bb
+    name="$1"
+else
+    name=$(readlink -f recipes-core/images/eval-image.bb)
+    name=$(echo "$name" | sed -e "s,.*eval-image-\(.*\)\.bb,\\1,")
+fi
 trap "killsleep" EXIT
 killsleep 1
 
 test -e $log && mv -f $log $log.bak
 
 if [ ${CACHEONLY:-0} -ne 1 ]; then
+    run=1
     echo
     echo "Cleaning all for a fresh build with downloads untouched..."
     if [ ${LOGBUILD:-0} -ne 0 ]; then
@@ -72,6 +80,16 @@ if [ ${CACHEONLY:-0} -ne 1 ]; then
     fi 2>&1 | tee $log
     if [ ${LOGBUILD:-0} -eq 0 ]; then
         do_build_after_clean all "$@" || exit $?
+    fi
+
+    if [ "$name" == "complete"
+      -o "$name" == "gnomedev"
+      -o "$name" == "nvdocker" ]; then
+        echo "Sleeping 2 minutes to let the SSD relax, CTRL+C to skip..."
+        trap "killsleep; echo ciao" INT; (
+            exec -ca "chkbldsleep" sleep 120
+        ); trap -- INT
+        echo
     fi
 fi
 
