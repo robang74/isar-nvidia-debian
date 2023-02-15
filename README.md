@@ -289,7 +289,15 @@ License
 
 Almost all the files are under MIT license and the others are in the public
 domain due to their simplicity and/or standardisation like system configuration.
-However the composition of these files is protected by the GPLv3 license.
+Instead, the composition of these files is protected by the GPLv3 license.
+
+* [Copyright Act, title 17. U.S.C. § 101.](https://www.law.cornell.edu/uscode/text/17/101)
+
+    Under the Copyright Act, a compilation [NDR: "composition" is used here as
+    synonym because compilation might confuse the reader about code compiling]
+    is defined as a "collection and assembling of preexisting materials or of
+    data [NDR: source code, as well] that are selected in such a way that the
+    resulting work as a whole constitutes an original work of authorship."
 
 This means that everyone can use a single MIT licensed file or a part of it
 under the MIT license terms. Instead, using two of them or two parts of them
