@@ -287,29 +287,34 @@ Proxy configure
 License
 -------
 
-Almost all the files are under MIT license and the others are in the public
-domain due to their simplicity and/or standardisation like system configuration.
-Instead, the composition of these files is protected by the GPLv3 license.
+Almost all the files are under one of many FOSS licenses and the others are in
+the public domain. Instead, the composition of these files is protected by the
+GPLv3 license under the effects of the [Copyright Act, title 17. USC §101](
+https://www.law.cornell.edu/uscode/text/17/101):
 
-* [Copyright Act, title 17. U.S.C. § 101.](https://www.law.cornell.edu/uscode/text/17/101)
+> Under the Copyright Act, a compilation [EdN: "composition" is used here as
+synonym because compilation might confuse the technical reader about code
+compiling] is defined as a "collection and assembling of preexisting materials
+or of data [EdN: data includes source code, as well] that are selected in such
+a way that the resulting work as a whole constitutes an original work of
+authorship."
 
-    Under the Copyright Act, a compilation [NDR: "composition" is used here as
-    synonym because compilation might confuse the reader about code compiling]
-    is defined as a "collection and assembling of preexisting materials or of
-    data [NDR: source code, as well] that are selected in such a way that the
-    resulting work as a whole constitutes an original work of authorship."
+This means, for example, that everyone can use a single MIT licensed file or a
+part of it under the MIT license terms. Instead, using two of them or two parts
+of them implies that you are using a subset of this collection which is a
+derived work of this collection which is licensed under the GPLv3, also.
 
-This means that everyone can use a single MIT licensed file or a part of it
-under the MIT license terms. Instead, using two of them or two parts of them
-implies that you are using a subset of this collection. Thus a derived work of
-this collection which is licensed under the GPLv3 also.
+The GPLv3 license applies to the composition unless you are the original author
+of a specific unmodified file. This means that every one that can legally claim
+rights about the original files maintains its rights, obviously. Therefore the
+original authors do not need to undergo the GPLv3 license applied to the
+composition and they maintains their original right in full. Unless, they use
+the entire composition or a part of it for which they had not the rights, 
+before.
 
-The GPLv3 license applies to the composition unless you are the original
-copyright owner or the author of a specific unmodified file. This means that
-every one that can legally claim rights about the original files maintains its
-rights, obviously. So, it should not need to complain with the GPLv3 license
-applied to the composition. Unless, the composition is adopted for the part
-which had not the rights, before.
+Some files, documents, software or firmware components can make an exception to
+the above general approach due to their specific copyright and license
+restrictions. In doubt, follow the thumb rule of fair-use.
 
 Moreover, this project is a layer of a customised ISAR engine as defined in
 the `kas.yml`. Some files of that project will transfered into the image thus
@@ -317,7 +322,9 @@ their license also matters. Please also check the `README.md` of this
 
 - https://github.com/robang74/isar#license
 
-For further information or requests, please write to the project maintainer:
+For further information or requests about licensing and how to obtain a fork 
+suitable for your own business, please write to the project maintainer and
+copyleft owner:
 
 - Roberto A. Foglietta <roberto.foglietta@gmail.com>
 
