@@ -82,8 +82,8 @@ if [ ${CACHEONLY:-0} -ne 1 ]; then
         do_build_after_clean all "$@" || exit $?
     fi
 
-    if [ "$name" == "complete"
-      -o "$name" == "gnomedev"
+    if [ "$name" == "complete" \
+      -o "$name" == "gnomedev" \
       -o "$name" == "nvdocker" ]; then
         echo "Sleeping 2 minutes to let the SSD relax, CTRL+C to skip..."
         trap "killsleep; echo ciao" INT; (
